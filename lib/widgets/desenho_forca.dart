@@ -1,0 +1,155 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
+import 'tema_caderno.dart';
+
+
+class DesenhoForca extends StatelessWidget {
+
+  final int quantidade_erros;
+  final int maximo_erros;
+
+
+  const DesenhoForca({super.key, required this.quantidade_erros, required this.maximo_erros});
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    bool sem_animacao = MediaQuery.disableAnimationsOf(context);
+
+    return Semantics(
+
+      label: 'Desenho da forca com $quantidade_erros de $maximo_erros erros',
+
+      child: TweenAnimationBuilder<double>(
+
+        tween: Tween(begin: 0, end: quantidade_erros.toDouble()),
+        duration: sem_animacao ? Duration.zero : const Duration(milliseconds: 350),
+        curve: Curves.easeOut,
+
+        builder: (context, progresso, _) => CustomPaint(
+
+          size: const Size(220, 220),
+          painter: PintorForca(progresso),
+
+        ),
+
+      ),
+
+    );
+
+  }
+
+}
+
+
+class PintorForca extends CustomPainter {
+
+  final double progresso;
+
+
+  const PintorForca(this.progresso);
+
+
+  static const List<List<Offset>> linhas_estrutura = [
+
+    [Offset(20, 206), Offset(130, 206)],
+    [Offset(50, 206), Offset(50, 16)],
+    [Offset(46, 18), Offset(152, 18)],
+    [Offset(50, 56), Offset(90, 18)],
+    [Offset(150, 18), Offset(150, 44)],
+
+  ];
+
+  static const List<List<Offset>> linhas_corpo = [
+
+    [Offset(150, 84), Offset(150, 138)],
+    [Offset(150, 98), Offset(122, 122)],
+    [Offset(150, 98), Offset(178, 122)],
+    [Offset(150, 138), Offset(126, 178)],
+    [Offset(150, 138), Offset(174, 178)],
+
+  ];
+
+
+  @override
+  void paint(Canvas canvas, Size size) {
+
+    canvas.save();
+    canvas.scale(size.width / 220, size.height / 220);
+
+    desenhar_estrutura(canvas);
+    desenhar_boneco(canvas);
+
+    canvas.restore();
+
+  }
+
+
+  void desenhar_estrutura(Canvas canvas) {
+
+    Paint caneta_azul = criar_caneta(cor_tinta, 5);
+
+    for (List<Offset> linha in linhas_estrutura) {
+
+      canvas.drawLine(linha.first, linha.last, caneta_azul);
+
+    }
+
+  }
+
+
+  void desenhar_boneco(Canvas canvas) {
+
+    Paint caneta_vermelha = criar_caneta(cor_caneta_vermelha, 4);
+    double parte_cabeca = calcular_parte(0);
+
+    if (parte_cabeca > 0) {
+
+      Rect area_cabeca = Rect.fromCircle(center: const Offset(150, 64), radius: 20);
+
+      canvas.drawArc(area_cabeca, -pi / 2, 2 * pi * parte_cabeca, false, caneta_vermelha);
+
+    }
+
+    for (int indice = 0; indice < linhas_corpo.length; indice++) {
+
+      double parte = calcular_parte(indice + 1);
+      Offset inicio = linhas_corpo[indice].first;
+      Offset fim = linhas_corpo[indice].last;
+
+      if (parte > 0) {
+
+        canvas.drawLine(inicio, Offset.lerp(inicio, fim, parte)!, caneta_vermelha);
+
+      }
+
+    }
+
+  }
+
+
+  double calcular_parte(int indice) {
+
+    return (progresso - indice).clamp(0.0, 1.0);
+
+  }
+
+
+  Paint criar_caneta(Color cor, double espessura) {
+
+    return Paint()
+      ..color = cor
+      ..strokeWidth = espessura
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+
+  }
+
+
+  @override
+  bool shouldRepaint(PintorForca oldDelegate) => oldDelegate.progresso != progresso;
+
+}

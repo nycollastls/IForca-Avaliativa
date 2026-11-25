@@ -1,10 +1,17 @@
-{
-  "linguagem": "Dart",
-  "palavras": [
-    "widget",
-    "future",
-    "stream",
-    "mixin",
-    "async"
-  ]
-}
+[
+  {"texto": "print", "dica": "Escreve uma linha no console", "categoria": "dart", "nivel": "facil"},
+  {"texto": "string", "dica": "Tipo usado para textos", "categoria": "dart", "nivel": "facil"},
+  {"texto": "list", "dica": "Coleção ordenada acessada por índice", "categoria": "dart", "nivel": "facil"},
+  {"texto": "class", "dica": "Palavra-chave que define um molde de objetos", "categoria": "dart", "nivel": "facil"},
+  {"texto": "final", "dica": "Marca a variável que recebe valor uma única vez", "categoria": "dart", "nivel": "facil"},
+  {"texto": "widget", "dica": "Peça básica de toda interface no Flutter", "categoria": "dart", "nivel": "medio"},
+  {"texto": "future", "dica": "Valor que só estará pronto mais tarde", "categoria": "dart", "nivel": "medio"},
+  {"texto": "async", "dica": "Marca uma função que pode usar await", "categoria": "dart", "nivel": "medio"},
+  {"texto": "scaffold", "dica": "Estrutura de tela com barra superior e corpo", "categoria": "dart", "nivel": "medio"},
+  {"texto": "dynamic", "dica": "Tipo que aceita qualquer valor sem verificação", "categoria": "dart", "nivel": "medio"},
+  {"texto": "stream", "dica": "Sequência de valores que chegam ao longo do tempo", "categoria": "dart", "nivel": "dificil"},
+  {"texto": "mixin", "dica": "Reaproveita código em classes sem usar herança", "categoria": "dart", "nivel": "dificil"},
+  {"texto": "navigator", "dica": "Controla a troca entre telas", "categoria": "dart", "nivel": "dificil"},
+  {"texto": "construtor", "dica": "Método especial que cria o objeto", "categoria": "dart", "nivel": "dificil"},
+  {"texto": "polimorfismo", "dica": "Mesmo método com comportamentos diferentes", "categoria": "dart", "nivel": "dificil"}
+]

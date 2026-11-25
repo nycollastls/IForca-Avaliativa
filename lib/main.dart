@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 
-import 'telas/tela_inicio.dart';
+import 'screens/tela_inicio.dart';
+import 'services/armazenamento_local.dart';
+import 'services/dados_aplicativo.dart';
+import 'widgets/tema_caderno.dart';
 
 
-void main() {
+Future<void> main() async {
 
-  runApp(const Forca());
+  WidgetsFlutterBinding.ensureInitialized();
+
+  DadosAplicativo dados = DadosAplicativo(ArmazenamentoLocal());
+
+  await dados.carregar();
+
+  runApp(Forca(dados: dados));
 
 }
 
 
 class Forca extends StatelessWidget {
 
-  const Forca({super.key});
+  final DadosAplicativo dados;
+
+
+  const Forca({super.key, required this.dados});
 
 
   @override
@@ -20,11 +32,12 @@ class Forca extends StatelessWidget {
 
     return MaterialApp(
 
-      title: 'Forca',
+      title: 'Forca da Programação',
+      debugShowCheckedModeBanner: false,
 
-      theme: ThemeData(colorSchemeSeed: Colors.indigo),
+      theme: criar_tema(),
 
-      home: const TelaInicio(),
+      home: TelaInicio(dados: dados),
 
     );
 

@@ -1,10 +1,17 @@
-{
-  "linguagem": "C",
-  "palavras": [
-    "ponteiro",
-    "struct",
-    "malloc",
-    "printf",
-    "typedef"
-  ]
-}
+[
+  {"texto": "printf", "dica": "Função que mostra texto formatado na tela", "categoria": "c", "nivel": "facil"},
+  {"texto": "scanf", "dica": "Função que lê valores do teclado", "categoria": "c", "nivel": "facil"},
+  {"texto": "while", "dica": "Laço que repete enquanto a condição é verdadeira", "categoria": "c", "nivel": "facil"},
+  {"texto": "float", "dica": "Tipo para números com casas decimais", "categoria": "c", "nivel": "facil"},
+  {"texto": "return", "dica": "Devolve um valor e encerra a função", "categoria": "c", "nivel": "facil"},
+  {"texto": "struct", "dica": "Agrupa variáveis de tipos diferentes em um só registro", "categoria": "c", "nivel": "medio"},
+  {"texto": "switch", "dica": "Escolhe um entre vários casos", "categoria": "c", "nivel": "medio"},
+  {"texto": "include", "dica": "Diretiva que traz uma biblioteca para o programa", "categoria": "c", "nivel": "medio"},
+  {"texto": "define", "dica": "Diretiva que cria uma constante simbólica", "categoria": "c", "nivel": "medio"},
+  {"texto": "ponteiro", "dica": "Variável que guarda um endereço de memória", "categoria": "c", "nivel": "medio"},
+  {"texto": "malloc", "dica": "Reserva memória durante a execução", "categoria": "c", "nivel": "dificil"},
+  {"texto": "typedef", "dica": "Cria um novo nome para um tipo existente", "categoria": "c", "nivel": "dificil"},
+  {"texto": "recursão", "dica": "Acontece quando uma função chama a si mesma", "categoria": "c", "nivel": "dificil"},
+  {"texto": "compilador", "dica": "Traduz o código-fonte para código de máquina", "categoria": "c", "nivel": "dificil"},
+  {"texto": "protótipo", "dica": "Declaração que anuncia uma função antes do corpo dela", "categoria": "c", "nivel": "dificil"}
+]

@@ -1,5 +1,5 @@
 name: forca
-description: "Jogo da forca com palavras de C e Dart."
+description: "Jogo da forca com palavras de C, Dart e lógica."
 publish_to: 'none'
 version: 1.0.0+1
 

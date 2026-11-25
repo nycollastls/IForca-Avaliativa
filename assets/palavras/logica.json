@@ -1,0 +1,17 @@
+[
+  {"texto": "laço", "dica": "Estrutura que repete instruções", "categoria": "logica", "nivel": "facil"},
+  {"texto": "variável", "dica": "Espaço com nome que guarda um valor", "categoria": "logica", "nivel": "facil"},
+  {"texto": "função", "dica": "Bloco com nome que pode ser chamado várias vezes", "categoria": "logica", "nivel": "facil"},
+  {"texto": "vetor", "dica": "Sequência de valores em uma única dimensão", "categoria": "logica", "nivel": "facil"},
+  {"texto": "inteiro", "dica": "Número sem casas decimais", "categoria": "logica", "nivel": "facil"},
+  {"texto": "matriz", "dica": "Organiza valores em linhas e colunas", "categoria": "logica", "nivel": "medio"},
+  {"texto": "booleano", "dica": "Aceita somente verdadeiro ou falso", "categoria": "logica", "nivel": "medio"},
+  {"texto": "condição", "dica": "Expressão que decide qual caminho seguir", "categoria": "logica", "nivel": "medio"},
+  {"texto": "operador", "dica": "Símbolo de soma, resto ou comparação", "categoria": "logica", "nivel": "medio"},
+  {"texto": "contador", "dica": "Variável que aumenta a cada repetição", "categoria": "logica", "nivel": "medio"},
+  {"texto": "algoritmo", "dica": "Sequência finita de passos para resolver um problema", "categoria": "logica", "nivel": "dificil"},
+  {"texto": "fluxograma", "dica": "Desenho que representa os passos de uma solução", "categoria": "logica", "nivel": "dificil"},
+  {"texto": "concatenação", "dica": "Junção de dois textos em um só", "categoria": "logica", "nivel": "dificil"},
+  {"texto": "incremento", "dica": "Aumento aplicado ao valor de um contador", "categoria": "logica", "nivel": "dificil"},
+  {"texto": "depuração", "dica": "Busca e correção de falhas no programa", "categoria": "logica", "nivel": "dificil"}
+]

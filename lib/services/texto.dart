@@ -1,3 +1,4 @@
+// Letras acentuadas e a versão sem acento de cada uma
 const Map<String, String> letras_sem_acento = {
 
   'Á': 'A',
@@ -17,6 +18,7 @@ const Map<String, String> letras_sem_acento = {
 };
 
 
+// Deixa o texto em maiúsculas, sem acentos e sem espaços repetidos
 String normalizar_texto(String texto) {
 
   String texto_normalizado = texto.trim().toUpperCase();
@@ -32,6 +34,7 @@ String normalizar_texto(String texto) {
 }
 
 
+// Diz se o caractere é uma letra de A a Z
 bool eh_letra(String caractere) {
 
   return RegExp(r'^[A-Z]$').hasMatch(normalizar_texto(caractere));

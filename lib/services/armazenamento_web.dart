@@ -3,6 +3,7 @@ import 'dart:js_interop';
 import 'armazenamento.dart';
 
 
+// Acesso à memória do navegador (localStorage)
 @JS('localStorage')
 external MemoriaNavegador get memoria_navegador;
 
@@ -18,8 +19,10 @@ extension type MemoriaNavegador(JSObject objeto) implements JSObject {
 }
 
 
+// Salva os JSON na memória do navegador
 class ArmazenamentoLocal implements Armazenamento {
 
+  // Lê o JSON guardado com esse nome
   @override
   Future<String?> ler(String nome_arquivo) async {
 
@@ -36,6 +39,7 @@ class ArmazenamentoLocal implements Armazenamento {
   }
 
 
+  // Guarda o JSON com esse nome
   @override
   Future<void> gravar(String nome_arquivo, String conteudo) async {
 

@@ -9,6 +9,7 @@ import '../widgets/tema_caderno.dart';
 import 'tela_sala.dart';
 
 
+// Tela de entrada do desafio multiplayer: criar sala ou entrar com código
 class TelaDesafio extends StatefulWidget {
 
   final DadosAplicativo dados;
@@ -41,6 +42,7 @@ class _TelaDesafioState extends State<TelaDesafio> {
   }
 
 
+  // Fala com o servidor e abre a sala quando der certo
   Future<void> abrir_sala(Future<SalaDesafio> Function() pedido) async {
 
     setState(() {
@@ -97,6 +99,7 @@ class _TelaDesafioState extends State<TelaDesafio> {
   }
 
 
+  // Cria uma sala nova, pública ou não
   void criar_sala() {
 
     abrir_sala(() => widget.dados.online.criar_sala(widget.dados.perfis.perfil, partida_publica));
@@ -104,6 +107,7 @@ class _TelaDesafioState extends State<TelaDesafio> {
   }
 
 
+  // Confere o código digitado e entra na sala
   void entrar_sala() {
 
     if (!chave_formulario.currentState!.validate()) {
@@ -119,6 +123,7 @@ class _TelaDesafioState extends State<TelaDesafio> {
   }
 
 
+  // Monta a tela do desafio
   @override
   Widget build(BuildContext context) {
 
@@ -133,6 +138,7 @@ class _TelaDesafioState extends State<TelaDesafio> {
   }
 
 
+  // Explicação do modo, criação de sala e campo do código
   List<Widget> construir_opcoes() {
 
     return [

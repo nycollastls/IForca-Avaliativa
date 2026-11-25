@@ -1,3 +1,4 @@
+// Opções de tamanho do texto e o quanto cada uma aumenta
 enum TamanhoTexto {
 
   normal('Normal', 1),

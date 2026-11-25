@@ -6,6 +6,7 @@ import '../models/perfil.dart';
 import 'armazenamento.dart';
 
 
+// Guarda o perfil e avisa as telas quando ele muda
 class RepositorioPerfil extends ChangeNotifier {
 
   static const String nome_arquivo = 'perfil.json';
@@ -21,6 +22,7 @@ class RepositorioPerfil extends ChangeNotifier {
   bool get tem_nome => perfil.nome.isNotEmpty;
 
 
+  // Carrega o perfil salvo
   Future<void> carregar() async {
 
     String? conteudo = await armazenamento.ler(nome_arquivo);
@@ -44,6 +46,7 @@ class RepositorioPerfil extends ChangeNotifier {
   }
 
 
+  // Muda o nome, tirando espaços sobrando
   Future<void> mudar_nome(String nome) {
 
     perfil.nome = nome.trim().replaceAll(RegExp(r'\s+'), ' ');
@@ -53,6 +56,7 @@ class RepositorioPerfil extends ChangeNotifier {
   }
 
 
+  // Aplica uma mudança no perfil e salva
   Future<void> alterar(void Function(Perfil perfil) mudanca) {
 
     mudanca(perfil);
@@ -62,6 +66,7 @@ class RepositorioPerfil extends ChangeNotifier {
   }
 
 
+  // Avisa as telas e grava o perfil em JSON
   Future<void> gravar() async {
 
     notifyListeners();

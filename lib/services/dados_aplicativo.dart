@@ -6,6 +6,7 @@ import 'repositorio_placar.dart';
 import 'servico_online.dart';
 
 
+// Junta tudo o que o app guarda e acessa
 class DadosAplicativo {
 
   final RepositorioPalavras palavras;
@@ -21,6 +22,7 @@ class DadosAplicativo {
         online = ServicoOnline(cliente);
 
 
+  // Carrega palavras, placar e perfil
   Future<void> carregar() async {
 
     await palavras.carregar();
@@ -30,6 +32,7 @@ class DadosAplicativo {
   }
 
 
+  // Avisa o servidor se o nome deve aparecer no leaderboard
   Future<bool> mudar_nome_leaderboard() async {
 
     try {

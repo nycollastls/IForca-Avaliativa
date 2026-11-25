@@ -13,6 +13,7 @@ import 'teclado_virtual.dart';
 import 'tema_caderno.dart';
 
 
+// Painel da partida: desenho, palavra, dica e teclado
 class PainelJogo extends StatefulWidget {
 
   final Palavra palavra;
@@ -56,6 +57,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Sorteia outra palavra e reinicia a partida
   void novo_jogo() {
 
     Palavra? proxima_palavra = widget.sortear_proxima?.call(jogo.palavra);
@@ -79,6 +81,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Tenta uma letra e confere se a partida acabou
   void escolher_letra(String letra) {
 
     if (resultado != null) {
@@ -104,6 +107,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Calcula o resultado e entrega para quem abriu a partida
   Future<void> terminar_partida() async {
 
     Resultado resultado_final = gerar_resultado(jogo);
@@ -131,6 +135,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Mostra a dica
   void pedir_dica() {
 
     setState(jogo.usar_dica);
@@ -140,6 +145,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Deixa jogar pelo teclado do computador
   KeyEventResult tratar_tecla(FocusNode foco, KeyEvent evento) {
 
     String? caractere = evento.character;
@@ -157,6 +163,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Monta o painel da partida
   @override
   Widget build(BuildContext context) {
 
@@ -211,6 +218,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Nível, erros e quanto a partida ainda vale
   Widget construir_situacao() {
 
     return Wrap(
@@ -239,6 +247,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Botão da dica, ou a dica marcada em amarelo
   Widget construir_dica() {
 
     if (jogo.dica_usada) {
@@ -279,6 +288,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Mensagem de vitória ou derrota
   String montar_mensagem(Resultado resultado_final) {
 
     if (resultado_final.venceu) {
@@ -300,6 +310,7 @@ class _PainelJogoState extends State<PainelJogo> {
   }
 
 
+  // Fim da partida: mensagem e botões
   Widget construir_fim_de_jogo(Resultado resultado_final) {
 
     return Column(

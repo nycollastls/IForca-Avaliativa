@@ -3,6 +3,7 @@ import 'dart:io';
 import 'armazenamento.dart';
 
 
+// Salva os JSON em arquivos no Android e no Windows
 class ArmazenamentoLocal implements Armazenamento {
 
   final Directory pasta;
@@ -11,6 +12,7 @@ class ArmazenamentoLocal implements Armazenamento {
   ArmazenamentoLocal({Directory? pasta}) : pasta = pasta ?? escolher_pasta();
 
 
+  // Escolhe a pasta do app em cada sistema
   static Directory escolher_pasta() {
 
     if (Platform.isAndroid) {
@@ -27,6 +29,7 @@ class ArmazenamentoLocal implements Armazenamento {
   }
 
 
+  // Caminho do arquivo dentro da pasta
   File abrir_arquivo(String nome_arquivo) {
 
     return File('${pasta.path}/$nome_arquivo');
@@ -34,6 +37,7 @@ class ArmazenamentoLocal implements Armazenamento {
   }
 
 
+  // Lê o arquivo; se não existir, devolve vazio
   @override
   Future<String?> ler(String nome_arquivo) async {
 
@@ -52,6 +56,7 @@ class ArmazenamentoLocal implements Armazenamento {
   }
 
 
+  // Cria a pasta, se precisar, e grava o arquivo
   @override
   Future<void> gravar(String nome_arquivo, String conteudo) async {
 

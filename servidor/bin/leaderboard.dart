@@ -4,11 +4,13 @@ import 'dart:io';
 import 'sala.dart';
 
 
+// Limites do leaderboard
 const int maximo_partidas = 300;
 const int tamanho_lista = 20;
 const String nome_oculto = 'Anônimo';
 
 
+// Jogador guardado em uma partida pública
 class JogadorPartida {
 
   final String id;
@@ -28,6 +30,7 @@ class JogadorPartida {
   });
 
 
+  // Lê o jogador salvo
   factory JogadorPartida.de_json(Map<String, dynamic> dados) {
 
     return JogadorPartida(
@@ -42,6 +45,7 @@ class JogadorPartida {
   }
 
 
+  // Transforma o jogador em mapa para salvar
   Map<String, dynamic> para_json() {
 
     return {'id': id, 'nome': nome, 'pontos': pontos, 'mostrar_nome': mostrar_nome};
@@ -51,6 +55,7 @@ class JogadorPartida {
 }
 
 
+// Partida pública com rodadas e jogadores
 class Partida {
 
   final String id;
@@ -71,6 +76,7 @@ class Partida {
   });
 
 
+  // Monta a partida a partir da sala, só com quem jogou
   factory Partida.de_sala(Sala sala, DateTime agora) {
 
     List<JogadorPartida> jogadores = [
@@ -105,6 +111,7 @@ class Partida {
   }
 
 
+  // Lê a partida salva
   factory Partida.de_json(Map<String, dynamic> dados) {
 
     return Partida(
@@ -130,6 +137,7 @@ class Partida {
   int get maior_pontuacao => jogadores.isEmpty ? 0 : jogadores.first.pontos;
 
 
+  // Transforma a partida em mapa para salvar
   Map<String, dynamic> para_json() {
 
     return {
@@ -145,6 +153,7 @@ class Partida {
   }
 
 
+  // Partida do jeito que o app recebe, sem as identificações
   Map<String, dynamic> montar_visao(String id_visitante, bool em_andamento) {
 
     return {
@@ -174,6 +183,7 @@ class Partida {
 }
 
 
+// Lista de partidas públicas salva em arquivo
 class Leaderboard {
 
   final File? arquivo;
@@ -185,6 +195,7 @@ class Leaderboard {
   Leaderboard({this.arquivo});
 
 
+  // Carrega as partidas salvas
   Future<void> carregar() async {
 
     File? arquivo_dados = arquivo;
@@ -214,6 +225,7 @@ class Leaderboard {
   }
 
 
+  // Guarda ou atualiza a partida de uma sala
   void registrar(Sala sala, DateTime agora) {
 
     partidas.removeWhere((partida) => partida.id == sala.id_partida);
@@ -230,6 +242,7 @@ class Leaderboard {
   }
 
 
+  // Mostra ou esconde o nome de um jogador em todas as partidas
   void mudar_nome(String id, bool mostrar) {
 
     for (Partida partida in partidas) {
@@ -251,6 +264,7 @@ class Leaderboard {
   }
 
 
+  // Ordena as partidas e devolve as 20 primeiras
   List<Map<String, dynamic>> listar(String id, bool por_pontos, Set<String> abertas) {
 
     List<Partida> ordenadas = [...partidas];
@@ -274,6 +288,7 @@ class Leaderboard {
   }
 
 
+  // Grava as partidas em arquivo, uma gravação de cada vez
   void gravar() {
 
     File? arquivo_dados = arquivo;

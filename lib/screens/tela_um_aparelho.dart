@@ -10,6 +10,7 @@ import 'tela_duelo.dart';
 import 'tela_jogo.dart';
 
 
+// Tela do modo um aparelho: jogo solo e dois jogadores
 class TelaUmAparelho extends StatefulWidget {
 
   final DadosAplicativo dados;
@@ -29,6 +30,7 @@ class _TelaUmAparelhoState extends State<TelaUmAparelho> {
   Nivel? nivel_escolhido;
 
 
+  // Abre outra tela por cima desta
   void abrir_tela(Widget tela) {
 
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => tela));
@@ -36,6 +38,7 @@ class _TelaUmAparelhoState extends State<TelaUmAparelho> {
   }
 
 
+  // Sorteia uma palavra da categoria e começa a partida
   void abrir_jogo(Categoria categoria) {
 
     Nivel? nivel = nivel_escolhido;
@@ -64,6 +67,7 @@ class _TelaUmAparelhoState extends State<TelaUmAparelho> {
   }
 
 
+  // Monta a tela do modo um aparelho
   @override
   Widget build(BuildContext context) {
 
@@ -98,6 +102,7 @@ class _TelaUmAparelhoState extends State<TelaUmAparelho> {
   }
 
 
+  // Botões de nível
   Widget construir_niveis() {
 
     return Wrap(
@@ -118,6 +123,7 @@ class _TelaUmAparelhoState extends State<TelaUmAparelho> {
   }
 
 
+  // Botão de um nível
   Widget construir_filtro(String rotulo, Nivel? nivel) {
 
     return ChoiceChip(
@@ -142,6 +148,7 @@ class _TelaUmAparelhoState extends State<TelaUmAparelho> {
   }
 
 
+  // Botão de uma categoria com o total de palavras
   Widget construir_categoria(Categoria categoria) {
 
     int total_palavras = widget.dados.palavras.filtrar(categoria, nivel_escolhido).length;

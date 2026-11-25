@@ -1,8 +1,10 @@
+// Limites dos textos recebidos
 const int maximo_nome = 15;
 const int maximo_palavra = 18;
 const int maximo_dica = 100;
 
 
+// Erro com o código HTTP e a mensagem
 class ErroRegra implements Exception {
 
   final int codigo_http;
@@ -14,6 +16,7 @@ class ErroRegra implements Exception {
 }
 
 
+// Lê um texto do pedido e tira caracteres estranhos
 String ler_texto(Map<String, dynamic> dados, String campo) {
 
   Object? valor = dados[campo];
@@ -29,6 +32,7 @@ String ler_texto(Map<String, dynamic> dados, String campo) {
 }
 
 
+// Lê um número do pedido dentro de um limite
 int ler_numero(Map<String, dynamic> dados, String campo, int minimo, int maximo) {
 
   Object? valor = dados[campo];
@@ -44,6 +48,7 @@ int ler_numero(Map<String, dynamic> dados, String campo, int minimo, int maximo)
 }
 
 
+// Lê um verdadeiro ou falso do pedido
 bool ler_opcao(Map<String, dynamic> dados, String campo) {
 
   Object? valor = dados[campo];
@@ -59,6 +64,7 @@ bool ler_opcao(Map<String, dynamic> dados, String campo) {
 }
 
 
+// Lê a identificação do jogador
 String ler_id(Map<String, dynamic> dados) {
 
   String id = ler_texto(dados, 'id');
@@ -74,6 +80,7 @@ String ler_id(Map<String, dynamic> dados) {
 }
 
 
+// Lê o nome do jogador
 String ler_nome(Map<String, dynamic> dados) {
 
   String nome = ler_texto(dados, 'nome');
@@ -89,6 +96,7 @@ String ler_nome(Map<String, dynamic> dados) {
 }
 
 
+// Lê a palavra secreta
 String ler_palavra(Map<String, dynamic> dados) {
 
   String palavra = ler_texto(dados, 'palavra');
@@ -105,6 +113,7 @@ String ler_palavra(Map<String, dynamic> dados) {
 }
 
 
+// Lê a dica
 String ler_dica(Map<String, dynamic> dados) {
 
   String dica = ler_texto(dados, 'dica');

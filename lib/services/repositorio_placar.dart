@@ -7,6 +7,7 @@ import 'armazenamento.dart';
 import 'regras_pontuacao.dart';
 
 
+// Guarda o placar do jogo solo e o duelo
 class RepositorioPlacar {
 
   static const String arquivo_placar = 'placar.json';
@@ -21,6 +22,7 @@ class RepositorioPlacar {
   RepositorioPlacar(this.armazenamento);
 
 
+  // Carrega o placar e o duelo salvos
   Future<void> carregar() async {
 
     placar = await ler_dados(arquivo_placar, Placar.de_json) ?? Placar();
@@ -29,6 +31,7 @@ class RepositorioPlacar {
   }
 
 
+  // Lê um JSON salvo; se estiver quebrado, ignora
   Future<T?> ler_dados<T>(String nome_arquivo, T Function(Map<String, dynamic>) converter) async {
 
     String? conteudo = await armazenamento.ler(nome_arquivo);
@@ -52,6 +55,7 @@ class RepositorioPlacar {
   }
 
 
+  // Registra o fim de uma partida solo
   Future<void> registrar_partida(Resultado resultado) async {
 
     aplicar_resultado(placar, resultado);
@@ -61,6 +65,7 @@ class RepositorioPlacar {
   }
 
 
+  // Zera o placar
   Future<void> zerar_placar() async {
 
     placar = Placar();
@@ -70,6 +75,7 @@ class RepositorioPlacar {
   }
 
 
+  // Grava o placar em JSON
   Future<void> gravar_placar() async {
 
     await armazenamento.gravar(arquivo_placar, jsonEncode(placar.para_json()));
@@ -77,6 +83,7 @@ class RepositorioPlacar {
   }
 
 
+  // Começa um duelo novo
   Future<void> iniciar_duelo(String primeiro_nome, String segundo_nome) async {
 
     duelo = Duelo(nomes: [primeiro_nome.trim(), segundo_nome.trim()]);
@@ -86,6 +93,7 @@ class RepositorioPlacar {
   }
 
 
+  // Soma os pontos da rodada e troca a vez no duelo
   Future<void> registrar_rodada(Resultado resultado) async {
 
     Duelo? duelo_atual = duelo;
@@ -106,6 +114,7 @@ class RepositorioPlacar {
   }
 
 
+  // Encerra o duelo
   Future<void> encerrar_duelo() async {
 
     duelo = null;
@@ -115,6 +124,7 @@ class RepositorioPlacar {
   }
 
 
+  // Grava o duelo em JSON
   Future<void> gravar_duelo() async {
 
     await armazenamento.gravar(arquivo_duelo, jsonEncode(duelo?.para_json()));

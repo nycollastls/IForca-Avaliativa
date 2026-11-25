@@ -8,6 +8,7 @@ import '../widgets/estilo_caderno.dart';
 import '../widgets/tema_caderno.dart';
 
 
+// Tela do leaderboard com as partidas públicas
 class TelaLeaderboard extends StatefulWidget {
 
   final DadosAplicativo dados;
@@ -39,6 +40,7 @@ class _TelaLeaderboardState extends State<TelaLeaderboard> {
   }
 
 
+  // Busca as partidas no servidor
   Future<void> carregar() async {
 
     setState(() {
@@ -75,6 +77,7 @@ class _TelaLeaderboardState extends State<TelaLeaderboard> {
   }
 
 
+  // Troca a ordem da lista e busca de novo
   Future<void> mudar_ordem(bool ordem_por_pontos) async {
 
     por_pontos = ordem_por_pontos;
@@ -84,6 +87,7 @@ class _TelaLeaderboardState extends State<TelaLeaderboard> {
   }
 
 
+  // Monta a tela do leaderboard
   @override
   Widget build(BuildContext context) {
 
@@ -112,6 +116,7 @@ class _TelaLeaderboardState extends State<TelaLeaderboard> {
   }
 
 
+  // Mostra carregamento, erro ou a lista de partidas
   List<Widget> construir_conteudo() {
 
     if (carregando) {
@@ -178,6 +183,7 @@ class _TelaLeaderboardState extends State<TelaLeaderboard> {
   }
 
 
+  // Botão de ordem da lista
   Widget construir_ordem(String rotulo, bool ordem_por_pontos) {
 
     return ChoiceChip(

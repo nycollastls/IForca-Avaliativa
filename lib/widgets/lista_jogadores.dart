@@ -4,6 +4,7 @@ import '../models/sala_desafio.dart';
 import 'estilo_caderno.dart';
 
 
+// Lista de jogadores da sala com os pontos
 class ListaJogadores extends StatelessWidget {
 
   final SalaDesafio sala;
@@ -12,6 +13,7 @@ class ListaJogadores extends StatelessWidget {
   const ListaJogadores({super.key, required this.sala});
 
 
+  // Texto de situação de cada jogador
   String descrever(JogadorSala jogador) {
 
     if (jogador.ausente) {
@@ -49,6 +51,7 @@ class ListaJogadores extends StatelessWidget {
   }
 
 
+  // Como o jogador terminou a rodada
   String descrever_fim(JogadorSala jogador) {
 
     if (jogador.venceu) {
@@ -68,6 +71,7 @@ class ListaJogadores extends StatelessWidget {
   }
 
 
+  // Ordena os jogadores pelos pontos
   @override
   Widget build(BuildContext context) {
 
@@ -88,6 +92,7 @@ class ListaJogadores extends StatelessWidget {
   }
 
 
+  // Linha de um jogador
   Widget construir_jogador(BuildContext context, JogadorSala jogador) {
 
     bool sou_eu = jogador.numero == sala.meu_numero;

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'estilo_caderno.dart';
 
 
+// Desenho da forca, que cresce a cada erro
 class DesenhoForca extends StatelessWidget {
 
   final int quantidade_erros;
@@ -14,6 +15,7 @@ class DesenhoForca extends StatelessWidget {
   const DesenhoForca({super.key, required this.quantidade_erros, required this.maximo_erros});
 
 
+  // Anima o desenho quando entra um erro novo
   @override
   Widget build(BuildContext context) {
 
@@ -46,6 +48,7 @@ class DesenhoForca extends StatelessWidget {
 }
 
 
+// Desenha a forca com CustomPaint
 class PintorForca extends CustomPainter {
 
   final double progresso;
@@ -76,6 +79,7 @@ class PintorForca extends CustomPainter {
   ];
 
 
+  // Desenha a estrutura e o boneco
   @override
   void paint(Canvas canvas, Size size) {
 
@@ -90,6 +94,7 @@ class PintorForca extends CustomPainter {
   }
 
 
+  // Estrutura da forca, sempre visível
   void desenhar_estrutura(Canvas canvas) {
 
     Paint caneta_azul = criar_caneta(estilo.tinta, 5 + estilo.espessura_extra);
@@ -103,6 +108,7 @@ class PintorForca extends CustomPainter {
   }
 
 
+  // Cabeça, corpo, braços e pernas, uma parte por erro
   void desenhar_boneco(Canvas canvas) {
 
     Paint caneta_vermelha = criar_caneta(estilo.vermelha, 4 + estilo.espessura_extra);
@@ -133,6 +139,7 @@ class PintorForca extends CustomPainter {
   }
 
 
+  // Quanto de cada parte já deve aparecer
   double calcular_parte(int indice) {
 
     return (progresso - indice).clamp(0.0, 1.0);
@@ -140,6 +147,7 @@ class PintorForca extends CustomPainter {
   }
 
 
+  // Caneta usada nos traços
   Paint criar_caneta(Color cor, double espessura) {
 
     return Paint()
@@ -151,6 +159,7 @@ class PintorForca extends CustomPainter {
   }
 
 
+  // Redesenha quando muda o número de erros ou o estilo
   @override
   bool shouldRepaint(PintorForca oldDelegate) {
 

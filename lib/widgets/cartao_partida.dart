@@ -4,6 +4,7 @@ import '../models/partida_leaderboard.dart';
 import 'estilo_caderno.dart';
 
 
+// Cartão de uma partida no leaderboard
 class CartaoPartida extends StatelessWidget {
 
   final int posicao;
@@ -13,6 +14,7 @@ class CartaoPartida extends StatelessWidget {
   const CartaoPartida({super.key, required this.posicao, required this.partida});
 
 
+  // Monta o cartão com o cabeçalho e os jogadores
   @override
   Widget build(BuildContext context) {
 
@@ -48,6 +50,7 @@ class CartaoPartida extends StatelessWidget {
   }
 
 
+  // Posição, quem venceu, rodadas e data
   Widget construir_cabecalho() {
 
     String rodadas = partida.rodadas == 1 ? '1 rodada' : '${partida.rodadas} rodadas';
@@ -99,6 +102,7 @@ class CartaoPartida extends StatelessWidget {
   }
 
 
+  // Linha de um jogador com os pontos
   Widget construir_jogador(JogadorLeaderboard jogador, EstiloCaderno estilo) {
 
     bool lidera = jogador.pontos == partida.jogadores.first.pontos;

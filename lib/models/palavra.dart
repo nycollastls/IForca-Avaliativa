@@ -2,6 +2,7 @@ import 'categoria.dart';
 import 'nivel.dart';
 
 
+// Palavra do jogo com texto, dica, categoria e nível
 class Palavra {
 
   final String texto;
@@ -20,6 +21,7 @@ class Palavra {
   });
 
 
+  // Cria a palavra a partir do JSON
   factory Palavra.de_json(Map<String, dynamic> dados) {
 
     return Palavra(
@@ -34,6 +36,7 @@ class Palavra {
   }
 
 
+  // Transforma a palavra em mapa para salvar em JSON
   Map<String, dynamic> para_json() {
 
     return {

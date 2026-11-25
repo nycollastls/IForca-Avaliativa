@@ -10,6 +10,7 @@ import '../widgets/tema_caderno.dart';
 import 'tela_jogo.dart';
 
 
+// Modo dois jogadores no mesmo aparelho
 class TelaDuelo extends StatefulWidget {
 
   final DadosAplicativo dados;
@@ -49,6 +50,7 @@ class _TelaDueloState extends State<TelaDuelo> {
   }
 
 
+  // Salva o duelo e avisa se não conseguir
   Future<void> salvar(Future<void> Function() acao) async {
 
     try {
@@ -74,6 +76,7 @@ class _TelaDueloState extends State<TelaDuelo> {
   }
 
 
+  // Confere os nomes e começa o duelo
   Future<void> iniciar_duelo() async {
 
     if (!chave_nomes.currentState!.validate()) {
@@ -87,6 +90,7 @@ class _TelaDueloState extends State<TelaDuelo> {
   }
 
 
+  // Pede confirmação e encerra o duelo
   Future<void> encerrar_duelo() async {
 
     bool confirmou = await confirmar_acao(
@@ -107,6 +111,7 @@ class _TelaDueloState extends State<TelaDuelo> {
   }
 
 
+  // Esconde a palavra secreta e passa o aparelho para quem vai adivinhar
   Future<void> iniciar_rodada(Duelo duelo) async {
 
     if (!chave_palavra.currentState!.validate()) {
@@ -168,6 +173,7 @@ class _TelaDueloState extends State<TelaDuelo> {
   }
 
 
+  // Monta a tela do duelo
   @override
   Widget build(BuildContext context) {
 
@@ -184,6 +190,7 @@ class _TelaDueloState extends State<TelaDuelo> {
   }
 
 
+  // Formulário com o nome dos dois jogadores
   List<Widget> construir_inicio() {
 
     return [
@@ -243,6 +250,7 @@ class _TelaDueloState extends State<TelaDuelo> {
   }
 
 
+  // Placar do duelo e formulário da palavra secreta
   List<Widget> construir_rodada(Duelo duelo) {
 
     return [

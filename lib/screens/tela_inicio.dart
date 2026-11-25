@@ -12,6 +12,7 @@ import 'tela_leaderboard.dart';
 import 'tela_um_aparelho.dart';
 
 
+// Tela inicial com os modos de jogo
 class TelaInicio extends StatelessWidget {
 
   final DadosAplicativo dados;
@@ -20,6 +21,7 @@ class TelaInicio extends StatelessWidget {
   const TelaInicio({super.key, required this.dados});
 
 
+  // Abre outra tela por cima desta
   void abrir_tela(BuildContext context, Widget tela) {
 
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => tela));
@@ -27,6 +29,7 @@ class TelaInicio extends StatelessWidget {
   }
 
 
+  // Pede o nome, se ainda não tiver, e abre o desafio
   Future<void> abrir_desafio(BuildContext context) async {
 
     bool tem_nome = await garantir_nome(context, dados);
@@ -40,6 +43,7 @@ class TelaInicio extends StatelessWidget {
   }
 
 
+  // Monta a tela inicial
   @override
   Widget build(BuildContext context) {
 
@@ -98,6 +102,7 @@ class TelaInicio extends StatelessWidget {
   }
 
 
+  // Nome do jogador na faixa de cima
   Widget construir_usuario() {
 
     return ListenableBuilder(
@@ -131,6 +136,7 @@ class TelaInicio extends StatelessWidget {
   }
 
 
+  // Título do jogo
   Widget construir_titulo() {
 
     return Semantics(
@@ -150,6 +156,7 @@ class TelaInicio extends StatelessWidget {
   }
 
 
+  // Botão grande de um modo de jogo
   Widget construir_modo({
 
     required IconData icone,
@@ -213,6 +220,7 @@ class TelaInicio extends StatelessWidget {
   }
 
 
+  // Botão do leaderboard
   Widget construir_leaderboard(BuildContext context) {
 
     return FilledButton.icon(
@@ -239,6 +247,7 @@ class TelaInicio extends StatelessWidget {
   }
 
 
+  // Botões de estatísticas e cadastro
   Widget construir_opcoes(BuildContext context) {
 
     return Wrap(

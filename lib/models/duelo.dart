@@ -1,3 +1,4 @@
+// Placar do modo dois jogadores e de quem é a vez
 class Duelo {
 
   final List<String> nomes;
@@ -22,6 +23,7 @@ class Duelo {
   String get nome_adivinhador => nomes[indice_adivinhador];
 
 
+  // Lê o duelo salvo e confere se os dados fazem sentido
   factory Duelo.de_json(Map<String, dynamic> dados) {
 
     List<String> nomes_lidos = List<String>.from(dados['nomes']);
@@ -45,6 +47,7 @@ class Duelo {
   }
 
 
+  // Transforma o duelo em mapa para salvar em JSON
   Map<String, dynamic> para_json() {
 
     return {

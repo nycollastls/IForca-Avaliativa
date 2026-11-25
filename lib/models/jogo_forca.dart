@@ -2,6 +2,7 @@ import '../services/texto.dart';
 import 'palavra.dart';
 
 
+// Estado de uma partida: palavra, letras tentadas, erros e dica
 class JogoForca {
 
   final Palavra palavra;
@@ -45,6 +46,7 @@ class JogoForca {
   }
 
 
+  // Diz se a letra já aparece na palavra; espaço e hífen já começam revelados
   bool letra_revelada(String letra) {
 
     return !eh_letra(letra) || letras_certas.contains(normalizar_texto(letra));
@@ -52,6 +54,7 @@ class JogoForca {
   }
 
 
+  // Diz se a letra já foi tentada, com ou sem acento
   bool letra_ja_usada(String letra) {
 
     return letras_tentadas.contains(normalizar_texto(letra));
@@ -59,6 +62,7 @@ class JogoForca {
   }
 
 
+  // Regra principal do jogo: guarda a letra como acerto ou como erro
   void tentar_letra(String letra) {
 
     String letra_normalizada = normalizar_texto(letra);
@@ -82,6 +86,7 @@ class JogoForca {
   }
 
 
+  // Marca que a dica foi usada, o que desconta pontos no final
   void usar_dica() {
 
     if (!encerrado) {

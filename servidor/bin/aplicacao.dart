@@ -7,6 +7,7 @@ import 'sala.dart';
 import 'validacao.dart';
 
 
+// Limites do servidor
 const int maximo_salas = 300;
 const int maximo_bytes = 4096;
 const int tamanho_codigo = 5;
@@ -16,6 +17,7 @@ const String letras_codigo = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 const Duration tempo_sala_vazia = Duration(minutes: 30);
 
 
+// Servidor do multiplayer e do leaderboard
 class Aplicacao {
 
   final Leaderboard leaderboard;
@@ -27,6 +29,7 @@ class Aplicacao {
   Aplicacao({required this.leaderboard, this.relogio = DateTime.now});
 
 
+  // Atende um pedido e transforma erros em resposta
   Future<void> atender(HttpRequest requisicao) async {
 
     int codigo_http = 200;
@@ -67,6 +70,7 @@ class Aplicacao {
   }
 
 
+  // Envia a resposta em JSON com o tamanho certo
   Future<void> responder(HttpResponse resposta, int codigo_http, Map<String, dynamic> conteudo) async {
 
     List<int> bytes = utf8.encode(jsonEncode(conteudo));
@@ -83,6 +87,7 @@ class Aplicacao {
   }
 
 
+  // Separa o endereço e lê o corpo do pedido
   Future<Map<String, dynamic>> tratar(HttpRequest requisicao) async {
 
     List<String> partes = requisicao.uri.pathSegments.where((parte) => parte.isNotEmpty).toList();
@@ -104,6 +109,7 @@ class Aplicacao {
   }
 
 
+  // Manda o pedido para a sala ou para o leaderboard
   Map<String, dynamic> processar(List<String> partes, Map<String, dynamic> dados) {
 
     String id = ler_id(dados);
@@ -127,6 +133,7 @@ class Aplicacao {
   }
 
 
+  // Lê o corpo do pedido, com limite de tamanho
   Future<Map<String, dynamic>> ler_corpo(HttpRequest requisicao) async {
 
     List<int> bytes = [];
@@ -156,6 +163,7 @@ class Aplicacao {
   }
 
 
+  // Pedidos do leaderboard: listar e mudar o nome
   Map<String, dynamic> tratar_leaderboard(List<String> partes, String id, Map<String, dynamic> dados) {
 
     String acao = partes.length == 2 ? partes[1] : '';
@@ -181,6 +189,7 @@ class Aplicacao {
   }
 
 
+  // Mostra ou esconde o nome nas salas e no leaderboard
   void mudar_nome(String id, bool mostrar) {
 
     for (Sala sala in salas.values) {
@@ -194,6 +203,7 @@ class Aplicacao {
   }
 
 
+  // Publica a partida no leaderboard quando uma rodada termina
   void publicar(Sala sala, DateTime agora) {
 
     if (!sala.publica || sala.rodadas_publicadas == sala.rodadas_concluidas) {
@@ -208,6 +218,7 @@ class Aplicacao {
   }
 
 
+  // Pedidos das salas: criar, entrar, sair e jogar
   Map<String, dynamic> tratar_sala(List<String> partes, String id, Map<String, dynamic> dados) {
 
     DateTime agora = relogio();
@@ -260,6 +271,7 @@ class Aplicacao {
   }
 
 
+  // Executa a ação pedida na sala
   void executar_acao(Sala sala, String acao, String id, Map<String, dynamic> dados, DateTime agora) {
 
     switch (acao) {
@@ -301,6 +313,7 @@ class Aplicacao {
   }
 
 
+  // Cria uma sala com um código que ainda não existe
   Sala criar_sala(String id, Map<String, dynamic> dados, DateTime agora) {
 
     String nome = ler_nome(dados);
@@ -337,6 +350,7 @@ class Aplicacao {
   }
 
 
+  // Sorteia letras para o código da sala
   String sortear_letras(int total) {
 
     String letras = '';
@@ -352,6 +366,7 @@ class Aplicacao {
   }
 
 
+  // Apaga as salas paradas há muito tempo
   void remover_salas_antigas() {
 
     DateTime agora = relogio();

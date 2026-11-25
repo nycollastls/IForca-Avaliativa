@@ -1,3 +1,4 @@
+// Níveis de dificuldade e quantos pontos cada um vale
 enum Nivel {
 
   facil('Fácil', 30),

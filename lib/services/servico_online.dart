@@ -7,6 +7,7 @@ import '../models/sala_desafio.dart';
 import 'cliente_http.dart';
 
 
+// Endereço do servidor e quanto tempo esperar por ele
 const String endereco_servidor = String.fromEnvironment(
 
   'ENDERECO_SERVIDOR',
@@ -17,9 +18,11 @@ const String endereco_servidor = String.fromEnvironment(
 const Duration limite_inicial = Duration(seconds: 80);
 const Duration limite_rapido = Duration(seconds: 12);
 
+// Quantas vezes repetir quando a resposta chega vazia
 const int maximo_tentativas = 3;
 
 
+// Erro com uma mensagem para mostrar ao jogador
 class ErroServidor implements Exception {
 
   final String mensagem;
@@ -34,6 +37,7 @@ class ErroServidor implements Exception {
 }
 
 
+// Conversa com o servidor do multiplayer e do leaderboard
 class ServicoOnline {
 
   final ClienteHttp cliente;
@@ -42,6 +46,7 @@ class ServicoOnline {
   ServicoOnline(this.cliente);
 
 
+  // Faz o pedido e repete se a resposta vier vazia
   Future<Map<String, dynamic>> pedir(String caminho, Map<String, dynamic> dados, Duration limite) async {
 
     for (int tentativa = 1; tentativa <= maximo_tentativas; tentativa++) {
@@ -70,6 +75,7 @@ class ServicoOnline {
   }
 
 
+  // Envia o pedido e transforma falha de rede em mensagem
   Future<RespostaHttp> enviar(String caminho, Map<String, dynamic> dados, Duration limite) async {
 
     try {
@@ -85,6 +91,7 @@ class ServicoOnline {
   }
 
 
+  // Tenta ler a resposta como JSON
   Map<String, dynamic>? ler_conteudo(String corpo) {
 
     try {
@@ -100,6 +107,7 @@ class ServicoOnline {
   }
 
 
+  // Pede algo da sala e lê a resposta
   Future<SalaDesafio> pedir_sala(String caminho, Map<String, dynamic> dados, Duration limite) async {
 
     return SalaDesafio.de_json(await pedir(caminho, dados, limite));
@@ -107,6 +115,7 @@ class ServicoOnline {
   }
 
 
+  // Identificação do jogador enviada ao servidor
   Map<String, dynamic> identificar(Perfil perfil) {
 
     return {'id': perfil.id, 'nome': perfil.nome, 'mostrar_nome': perfil.aparecer_leaderboard};
@@ -114,6 +123,7 @@ class ServicoOnline {
   }
 
 
+  // Cria uma sala
   Future<SalaDesafio> criar_sala(Perfil perfil, bool publica) {
 
     return pedir_sala('salas', {...identificar(perfil), 'publica': publica}, limite_inicial);
@@ -121,6 +131,7 @@ class ServicoOnline {
   }
 
 
+  // Entra em uma sala pelo código
   Future<SalaDesafio> entrar_sala(Perfil perfil, String codigo) {
 
     return pedir_sala('salas/$codigo/entrar', identificar(perfil), limite_inicial);
@@ -128,6 +139,7 @@ class ServicoOnline {
   }
 
 
+  // Pergunta como está a sala
   Future<SalaDesafio> consultar_sala(Perfil perfil, String codigo) {
 
     return pedir_sala('salas/$codigo/estado', {'id': perfil.id}, limite_rapido);
@@ -135,6 +147,7 @@ class ServicoOnline {
   }
 
 
+  // Começa o desafio
   Future<SalaDesafio> iniciar_sala(Perfil perfil, String codigo) {
 
     return pedir_sala('salas/$codigo/iniciar', {'id': perfil.id}, limite_rapido);
@@ -142,6 +155,7 @@ class ServicoOnline {
   }
 
 
+  // Envia a palavra secreta
   Future<SalaDesafio> enviar_palavra(Perfil perfil, String codigo, String palavra, String dica) {
 
     return pedir_sala('salas/$codigo/palavra', {'id': perfil.id, 'palavra': palavra, 'dica': dica}, limite_rapido);
@@ -149,6 +163,7 @@ class ServicoOnline {
   }
 
 
+  // Envia o resultado da partida
   Future<SalaDesafio> enviar_resultado(Perfil perfil, String codigo, int rodada, Resultado resultado) {
 
     return pedir_sala(
@@ -162,6 +177,7 @@ class ServicoOnline {
   }
 
 
+  // Encerra a rodada antes de todos terminarem
   Future<SalaDesafio> encerrar_rodada(Perfil perfil, String codigo, int rodada) {
 
     return pedir_sala('salas/$codigo/encerrar', {'id': perfil.id, 'rodada': rodada}, limite_rapido);
@@ -169,6 +185,7 @@ class ServicoOnline {
   }
 
 
+  // Passa para a próxima rodada
   Future<SalaDesafio> proxima_rodada(Perfil perfil, String codigo, int rodada) {
 
     return pedir_sala('salas/$codigo/proxima', {'id': perfil.id, 'rodada': rodada}, limite_rapido);
@@ -176,6 +193,7 @@ class ServicoOnline {
   }
 
 
+  // Sai da sala
   Future<void> sair_sala(Perfil perfil, String codigo) async {
 
     await pedir('salas/$codigo/sair', {'id': perfil.id}, limite_rapido);
@@ -183,6 +201,7 @@ class ServicoOnline {
   }
 
 
+  // Mostra ou esconde o nome no leaderboard
   Future<void> mudar_nome(Perfil perfil) async {
 
     await pedir('leaderboard/nome', {'id': perfil.id, 'mostrar_nome': perfil.aparecer_leaderboard}, limite_inicial);
@@ -190,6 +209,7 @@ class ServicoOnline {
   }
 
 
+  // Busca as partidas do leaderboard
   Future<List<PartidaLeaderboard>> listar_partidas(Perfil perfil, bool por_pontos) async {
 
     Map<String, dynamic> dados = await pedir(

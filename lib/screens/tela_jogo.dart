@@ -6,6 +6,7 @@ import '../widgets/painel_jogo.dart';
 import '../widgets/tema_caderno.dart';
 
 
+// Tela de uma partida, usada no jogo solo e no duelo
 class TelaJogo extends StatelessWidget {
 
   final String titulo;
@@ -25,6 +26,7 @@ class TelaJogo extends StatelessWidget {
   });
 
 
+  // Monta a tela com o painel do jogo
   @override
   Widget build(BuildContext context) {
 

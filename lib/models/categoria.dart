@@ -1,3 +1,4 @@
+// Categorias de palavras e o arquivo JSON de cada uma
 enum Categoria {
 
   c('C', 'assets/palavras/c.json'),

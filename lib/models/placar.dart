@@ -2,6 +2,7 @@ import 'categoria.dart';
 import 'nivel.dart';
 
 
+// Placar do jogo solo: pontos, vitórias, derrotas e sequências
 class Placar {
 
   int pontos;
@@ -25,6 +26,7 @@ class Placar {
   }) : matriz_vitorias = matriz_vitorias ?? criar_matriz_vazia();
 
 
+  // Matriz de vitórias zerada, com uma linha por categoria e uma coluna por nível
   static List<List<int>> criar_matriz_vazia() {
 
     return [
@@ -38,6 +40,7 @@ class Placar {
   }
 
 
+  // Lê o placar salvo em JSON, inclusive a matriz
   factory Placar.de_json(Map<String, dynamic> dados) {
 
     List<List<int>> matriz_lida = criar_matriz_vazia();
@@ -67,6 +70,7 @@ class Placar {
   }
 
 
+  // Transforma o placar em mapa para salvar em JSON
   Map<String, dynamic> para_json() {
 
     return {

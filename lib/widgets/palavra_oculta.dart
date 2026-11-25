@@ -4,6 +4,7 @@ import '../models/jogo_forca.dart';
 import 'estilo_caderno.dart';
 
 
+// Palavra com as letras escondidas
 class PalavraOculta extends StatelessWidget {
 
   final JogoForca jogo;
@@ -12,6 +13,7 @@ class PalavraOculta extends StatelessWidget {
   const PalavraOculta({super.key, required this.jogo});
 
 
+  // Cor da letra conforme o fim da partida
   Color escolher_cor(String letra, EstiloCaderno estilo) {
 
     if (jogo.perdeu && !jogo.letra_revelada(letra)) {
@@ -25,6 +27,7 @@ class PalavraOculta extends StatelessWidget {
   }
 
 
+  // Monta a palavra e o texto para o leitor de tela
   @override
   Widget build(BuildContext context) {
 
@@ -60,6 +63,7 @@ class PalavraOculta extends StatelessWidget {
   }
 
 
+  // Espaço de uma letra
   Widget construir_casa(String letra, double escala, EstiloCaderno estilo) {
 
     bool espaco = letra == ' ';

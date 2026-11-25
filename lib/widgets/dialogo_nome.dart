@@ -5,6 +5,7 @@ import '../services/validador.dart';
 import 'tema_caderno.dart';
 
 
+// Pede o nome só se o jogador ainda não tiver
 Future<bool> garantir_nome(BuildContext context, DadosAplicativo dados) async {
 
   if (dados.perfis.tem_nome) {
@@ -18,6 +19,7 @@ Future<bool> garantir_nome(BuildContext context, DadosAplicativo dados) async {
 }
 
 
+// Abre a janela do nome e salva o que for digitado
 Future<bool> pedir_nome(BuildContext context, DadosAplicativo dados) async {
 
   String? nome = await showDialog<String>(
@@ -52,6 +54,7 @@ Future<bool> pedir_nome(BuildContext context, DadosAplicativo dados) async {
 }
 
 
+// Janela para escolher o nome
 class DialogoNome extends StatefulWidget {
 
   final String nome_atual;
@@ -82,6 +85,7 @@ class _DialogoNomeState extends State<DialogoNome> {
   }
 
 
+  // Confere o nome e fecha a janela
   void salvar() {
 
     if (chave_formulario.currentState!.validate()) {
@@ -93,6 +97,7 @@ class _DialogoNomeState extends State<DialogoNome> {
   }
 
 
+  // Monta a janela do nome
   @override
   Widget build(BuildContext context) {
 

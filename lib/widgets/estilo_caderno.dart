@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 
+// Cores e opções visuais do app, com a versão de alto contraste
 class EstiloCaderno extends ThemeExtension<EstiloCaderno> {
 
   final Color papel;
@@ -39,6 +40,7 @@ class EstiloCaderno extends ThemeExtension<EstiloCaderno> {
         espessura_extra = 2;
 
 
+  // Pega o estilo atual da tela
   static EstiloCaderno de(BuildContext context) {
 
     return Theme.of(context).extension<EstiloCaderno>() ?? const EstiloCaderno();

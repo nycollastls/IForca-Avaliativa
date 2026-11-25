@@ -4,10 +4,12 @@ import '../models/perfil.dart';
 import 'estilo_caderno.dart';
 
 
+// Medidas da página
 const double tamanho_quadricula = 24;
 const double largura_maxima = 560;
 
 
+// Escolhe o estilo comum ou o de alto contraste
 EstiloCaderno criar_estilo(Perfil perfil) {
 
   if (perfil.alto_contraste) {
@@ -31,6 +33,7 @@ EstiloCaderno criar_estilo(Perfil perfil) {
 }
 
 
+// Espaçamento das letras, se estiver ligado
 TextTheme criar_textos(bool letras_espacadas) {
 
   if (!letras_espacadas) {
@@ -56,6 +59,7 @@ TextTheme criar_textos(bool letras_espacadas) {
 }
 
 
+// Borda grossa nos botões selecionados pelo teclado
 WidgetStateProperty<BorderSide?> criar_borda_foco(Color cor, BorderSide? borda_comum) {
 
   return WidgetStateProperty.resolveWith((estados) {
@@ -73,6 +77,7 @@ WidgetStateProperty<BorderSide?> criar_borda_foco(Color cor, BorderSide? borda_c
 }
 
 
+// Tema do app com as cores do caderno
 ThemeData criar_tema(Perfil perfil) {
 
   EstiloCaderno estilo = criar_estilo(perfil);
@@ -166,6 +171,7 @@ ThemeData criar_tema(Perfil perfil) {
 }
 
 
+// Página com a faixa azul e o fundo quadriculado
 class PaginaCaderno extends StatelessWidget {
 
   final String? titulo;
@@ -185,6 +191,7 @@ class PaginaCaderno extends StatelessWidget {
   });
 
 
+  // Monta a página
   @override
   Widget build(BuildContext context) {
 
@@ -237,6 +244,7 @@ class PaginaCaderno extends StatelessWidget {
 }
 
 
+// Subtítulo de seção
 class Subtitulo extends StatelessWidget {
 
   final String texto;
@@ -266,6 +274,7 @@ class Subtitulo extends StatelessWidget {
 }
 
 
+// Aviso de que o app está esperando o servidor
 class AvisoConexao extends StatelessWidget {
 
   const AvisoConexao({super.key});
@@ -295,6 +304,7 @@ class AvisoConexao extends StatelessWidget {
 }
 
 
+// Desenha o quadriculado do fundo
 class PintorQuadriculado extends CustomPainter {
 
   final Color cor_linha;
@@ -303,6 +313,7 @@ class PintorQuadriculado extends CustomPainter {
   const PintorQuadriculado(this.cor_linha);
 
 
+  // Linhas do quadriculado
   @override
   void paint(Canvas canvas, Size size) {
 
@@ -331,6 +342,7 @@ class PintorQuadriculado extends CustomPainter {
 }
 
 
+// Mostra uma mensagem rápida embaixo da tela
 void mostrar_aviso(BuildContext context, String mensagem) {
 
   ScaffoldMessenger.of(context)
@@ -340,6 +352,7 @@ void mostrar_aviso(BuildContext context, String mensagem) {
 }
 
 
+// Janela de confirmação com Cancelar e a ação
 Future<bool> confirmar_acao(BuildContext context, String titulo, String mensagem, String rotulo_acao) async {
 
   bool? confirmou = await showDialog<bool>(

@@ -4,6 +4,7 @@ import '../models/jogo_forca.dart';
 import 'estilo_caderno.dart';
 
 
+// Linhas do teclado comum e do teclado em ordem alfabética
 const List<List<String>> linhas_teclado = [
 
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -21,6 +22,7 @@ const List<List<String>> linhas_alfabeticas = [
 ];
 
 
+// Teclado na tela
 class TecladoVirtual extends StatelessWidget {
 
   final JogoForca jogo;
@@ -30,6 +32,7 @@ class TecladoVirtual extends StatelessWidget {
   const TecladoVirtual({super.key, required this.jogo, required this.ao_escolher});
 
 
+  // Monta as linhas do teclado no tamanho da tela
   @override
   Widget build(BuildContext context) {
 
@@ -72,6 +75,7 @@ class TecladoVirtual extends StatelessWidget {
   }
 
 
+  // Tecla de uma letra, com cor e marca de acerto ou erro
   Widget construir_tecla(String letra, Size tamanho, EstiloCaderno estilo) {
 
     bool acertou = jogo.letras_certas.contains(letra);

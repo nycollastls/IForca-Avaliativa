@@ -11,6 +11,7 @@ import 'services/dados_aplicativo.dart';
 import 'widgets/tema_caderno.dart';
 
 
+// Abre os dados salvos e inicia o app
 Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +31,7 @@ Future<void> main() async {
 }
 
 
+// Widget raiz: tema, idioma e tela inicial
 class Forca extends StatelessWidget {
 
   final DadosAplicativo dados;
@@ -38,6 +40,7 @@ class Forca extends StatelessWidget {
   const Forca({super.key, required this.dados});
 
 
+  // Recria o app quando o perfil muda, para aplicar as preferências na hora
   @override
   Widget build(BuildContext context) {
 
@@ -68,6 +71,7 @@ class Forca extends StatelessWidget {
   }
 
 
+  // Aplica o tamanho do texto e a redução de animações escolhidos nas configurações
   Widget aplicar_acessibilidade(BuildContext context, Widget tela) {
 
     Perfil perfil = dados.perfis.perfil;

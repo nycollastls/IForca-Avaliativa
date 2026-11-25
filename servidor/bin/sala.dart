@@ -1,6 +1,7 @@
 import 'validacao.dart';
 
 
+// Regras da sala
 const int minimo_jogadores = 2;
 const int maximo_jogadores = 6;
 const int pontos_maximos_rodada = 40;
@@ -10,9 +11,11 @@ const Duration tempo_ausencia = Duration(seconds: 25);
 const Duration tempo_remocao = Duration(minutes: 10);
 
 
+// Etapas de uma rodada
 enum Fase { espera, escrevendo, jogando, resultado }
 
 
+// Jogador dentro de uma sala
 class Jogador {
 
   final String id;
@@ -41,9 +44,11 @@ class Jogador {
   });
 
 
+  // Sem dar sinal há um tempo, o jogador conta como ausente
   bool esta_ausente(DateTime agora) => agora.difference(visto_em) > tempo_ausencia;
 
 
+  // Limpa o que o jogador fez na rodada
   void limpar_rodada() {
 
     participa = false;
@@ -56,6 +61,7 @@ class Jogador {
 }
 
 
+// Sala do desafio multiplayer
 class Sala {
 
   final String codigo;
@@ -87,6 +93,7 @@ class Sala {
   }) : usada_em = criada_em;
 
 
+  // Acha o jogador pela identificação
   Jogador buscar_jogador(String id) {
 
     for (Jogador jogador in jogadores) {
@@ -104,6 +111,7 @@ class Sala {
   }
 
 
+  // Jogadores que ainda estão conectados
   List<Jogador> listar_presentes(DateTime agora) {
 
     return jogadores.where((jogador) => !jogador.esta_ausente(agora)).toList();
@@ -111,6 +119,7 @@ class Sala {
   }
 
 
+  // Quem comanda a sala: o primeiro que está conectado
   Jogador escolher_anfitriao(DateTime agora) {
 
     List<Jogador> presentes = listar_presentes(agora);
@@ -120,6 +129,7 @@ class Sala {
   }
 
 
+  // Coloca o jogador na sala; quem volta recupera os pontos
   void entrar(String id, String nome, bool mostrar_nome, DateTime agora) {
 
     for (Jogador jogador in jogadores) {
@@ -173,6 +183,7 @@ class Sala {
   }
 
 
+  // Tira o jogador da sala
   void sair(String id, DateTime agora) {
 
     jogadores.removeWhere((jogador) => jogador.id == id);
@@ -182,6 +193,7 @@ class Sala {
   }
 
 
+  // Registra que o jogador ainda está na sala
   void marcar_presenca(String id, DateTime agora) {
 
     buscar_jogador(id).visto_em = agora;
@@ -192,6 +204,7 @@ class Sala {
   }
 
 
+  // Tira quem sumiu e destrava a rodada quando preciso
   void atualizar(DateTime agora) {
 
     jogadores.removeWhere((jogador) => agora.difference(jogador.visto_em) > tempo_remocao);
@@ -218,6 +231,7 @@ class Sala {
   }
 
 
+  // Volta a sala para a espera
   void voltar_para_espera() {
 
     fase = Fase.espera;
@@ -229,6 +243,7 @@ class Sala {
   }
 
 
+  // Limpa a rodada de todos
   void limpar_rodada() {
 
     for (Jogador jogador in jogadores) {
@@ -240,6 +255,7 @@ class Sala {
   }
 
 
+  // Passa a vez se quem escreve perdeu a conexão
   void trocar_desafiante_ausente(DateTime agora) {
 
     List<Jogador> presentes = listar_presentes(agora);
@@ -254,6 +270,7 @@ class Sala {
   }
 
 
+  // Escolhe o próximo a escrever a palavra
   int escolher_proximo(List<Jogador> candidatos) {
 
     for (Jogador jogador in candidatos) {
@@ -271,6 +288,7 @@ class Sala {
   }
 
 
+  // Exige pelo menos dois jogadores conectados
   void exigir_jogadores(DateTime agora) {
 
     if (listar_presentes(agora).length < minimo_jogadores) {
@@ -282,6 +300,7 @@ class Sala {
   }
 
 
+  // Começa o desafio
   void iniciar(String id, DateTime agora) {
 
     if (fase != Fase.espera) {
@@ -302,6 +321,7 @@ class Sala {
   }
 
 
+  // Abre uma rodada nova
   void abrir_rodada(DateTime agora) {
 
     limpar_rodada();
@@ -315,6 +335,7 @@ class Sala {
   }
 
 
+  // Recebe a palavra secreta e começa a rodada
   void definir_palavra(String id, String palavra_nova, String dica_nova, DateTime agora) {
 
     bool sou_desafiante = buscar_jogador(id).numero == numero_desafiante;
@@ -347,6 +368,7 @@ class Sala {
   }
 
 
+  // Registra o resultado de quem adivinhou, com limite de pontos
   void registrar_resultado(String id, int rodada_jogada, bool venceu, int pontos, DateTime agora) {
 
     Jogador jogador = buscar_jogador(id);
@@ -373,6 +395,7 @@ class Sala {
   }
 
 
+  // Termina a rodada quando ninguém mais está jogando
   void verificar_fim(DateTime agora) {
 
     bool alguem_jogando = jogadores.any(
@@ -390,6 +413,7 @@ class Sala {
   }
 
 
+  // Fecha a rodada e conta para o leaderboard
   void concluir_rodada() {
 
     fase = Fase.resultado;
@@ -417,6 +441,7 @@ class Sala {
   }
 
 
+  // Encerra a rodada antes de todos terminarem
   void encerrar_rodada(String id, int rodada_atual, DateTime agora) {
 
     Jogador jogador = buscar_jogador(id);
@@ -438,6 +463,7 @@ class Sala {
   }
 
 
+  // Passa para a próxima rodada
   void proxima_rodada(String id, int rodada_atual, DateTime agora) {
 
     buscar_jogador(id);
@@ -454,6 +480,7 @@ class Sala {
   }
 
 
+  // O que cada jogador pode ver da sala
   Map<String, dynamic> montar_visao(String id, DateTime agora) {
 
     Jogador eu = buscar_jogador(id);

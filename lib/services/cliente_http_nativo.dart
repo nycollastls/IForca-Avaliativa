@@ -4,11 +4,13 @@ import 'dart:io';
 import 'cliente_http.dart';
 
 
+// Cliente HTTP do Android e do Windows
 class ClienteHttpLocal implements ClienteHttp {
 
   final HttpClient cliente = HttpClient();
 
 
+  // Envia o pedido e devolve a resposta
   @override
   Future<RespostaHttp> enviar(String endereco, String corpo) async {
 

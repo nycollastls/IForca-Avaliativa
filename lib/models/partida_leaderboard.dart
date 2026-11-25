@@ -1,3 +1,4 @@
+// Jogador como aparece no leaderboard
 class JogadorLeaderboard {
 
   final String nome;
@@ -8,6 +9,7 @@ class JogadorLeaderboard {
   const JogadorLeaderboard({required this.nome, required this.pontos, required this.sou_eu});
 
 
+  // Lê o jogador que veio do servidor
   factory JogadorLeaderboard.de_json(Map<String, dynamic> dados) {
 
     return JogadorLeaderboard(
@@ -23,6 +25,7 @@ class JogadorLeaderboard {
 }
 
 
+// Partida pública do leaderboard com seus jogadores
 class PartidaLeaderboard {
 
   final DateTime inicio;
@@ -41,6 +44,7 @@ class PartidaLeaderboard {
   });
 
 
+  // Lê a partida que veio do servidor
   factory PartidaLeaderboard.de_json(Map<String, dynamic> dados) {
 
     return PartidaLeaderboard(

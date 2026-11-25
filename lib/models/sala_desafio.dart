@@ -1,6 +1,8 @@
+// Etapas de uma rodada do desafio multiplayer
 enum FaseSala { espera, escrevendo, jogando, resultado }
 
 
+// Jogador da sala do jeito que o servidor manda
 class JogadorSala {
 
   final int numero;
@@ -27,6 +29,7 @@ class JogadorSala {
   });
 
 
+  // Lê o jogador que veio do servidor
   factory JogadorSala.de_json(Map<String, dynamic> dados) {
 
     return JogadorSala(
@@ -47,6 +50,7 @@ class JogadorSala {
 }
 
 
+// Situação da sala multiplayer vista por este jogador
 class SalaDesafio {
 
   final String codigo;
@@ -77,6 +81,7 @@ class SalaDesafio {
   });
 
 
+  // Lê a sala que veio do servidor
   factory SalaDesafio.de_json(Map<String, dynamic> dados) {
 
     List<dynamic> lista_jogadores = dados['jogadores'] as List<dynamic>;

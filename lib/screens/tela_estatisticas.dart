@@ -8,6 +8,7 @@ import '../widgets/estilo_caderno.dart';
 import '../widgets/tema_caderno.dart';
 
 
+// Tela com as estatísticas do jogador
 class TelaEstatisticas extends StatefulWidget {
 
   final DadosAplicativo dados;
@@ -24,6 +25,7 @@ class TelaEstatisticas extends StatefulWidget {
 
 class _TelaEstatisticasState extends State<TelaEstatisticas> {
 
+  // Pede confirmação e zera o placar
   Future<void> zerar_placar() async {
 
     bool confirmou = await confirmar_acao(
@@ -64,6 +66,7 @@ class _TelaEstatisticasState extends State<TelaEstatisticas> {
   }
 
 
+  // Monta a tela de estatísticas
   @override
   Widget build(BuildContext context) {
 
@@ -109,6 +112,7 @@ class _TelaEstatisticasState extends State<TelaEstatisticas> {
   }
 
 
+  // Linha com um número do placar
   Widget construir_linha(String rotulo, int valor) {
 
     return Padding(
@@ -132,6 +136,7 @@ class _TelaEstatisticasState extends State<TelaEstatisticas> {
   }
 
 
+  // Tabela de vitórias por categoria e nível, lida da matriz
   Widget construir_tabela(Placar placar) {
 
     return Table(
@@ -177,6 +182,7 @@ class _TelaEstatisticasState extends State<TelaEstatisticas> {
   }
 
 
+  // Célula da tabela
   Widget construir_celula(String texto) {
 
     return Padding(

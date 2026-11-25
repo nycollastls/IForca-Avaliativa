@@ -3,6 +3,7 @@ import 'dart:math';
 import 'tamanho_texto.dart';
 
 
+// Dados do jogador neste aparelho: nome e preferências de acessibilidade
 class Perfil {
 
   final String id;
@@ -33,6 +34,7 @@ class Perfil {
   });
 
 
+  // Cria um perfil novo com uma identificação aleatória
   factory Perfil.novo() {
 
     Random sorteador = Random.secure();
@@ -49,6 +51,7 @@ class Perfil {
   }
 
 
+  // Lê o perfil salvo; campos que faltam ficam com o valor padrão
   factory Perfil.de_json(Map<String, dynamic> dados) {
 
     String nome_tamanho = dados['tamanho_texto'] as String? ?? TamanhoTexto.normal.name;
@@ -70,6 +73,7 @@ class Perfil {
   }
 
 
+  // Transforma o perfil em mapa para salvar em JSON
   Map<String, dynamic> para_json() {
 
     return {

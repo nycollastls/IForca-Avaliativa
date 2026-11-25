@@ -1,6 +1,7 @@
 import 'palavra.dart';
 
 
+// Resultado de uma partida que acabou
 class Resultado {
 
   final Palavra palavra;

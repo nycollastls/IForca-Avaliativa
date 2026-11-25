@@ -5,6 +5,7 @@ import 'aplicacao.dart';
 import 'leaderboard.dart';
 
 
+// Liga o servidor na porta do Render e carrega o leaderboard
 Future<void> main() async {
 
   Map<String, String> ambiente = Platform.environment;

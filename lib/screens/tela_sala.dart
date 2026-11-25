@@ -17,9 +17,11 @@ import '../widgets/painel_jogo.dart';
 import '../widgets/tema_caderno.dart';
 
 
+// De quanto em quanto tempo a sala pergunta o estado ao servidor
 const Duration intervalo_consulta = Duration(seconds: 2);
 
 
+// Tela da sala multiplayer
 class TelaSala extends StatefulWidget {
 
   final DadosAplicativo dados;
@@ -59,6 +61,7 @@ class _TelaSalaState extends State<TelaSala> {
   ServicoOnline get online => widget.dados.online;
 
 
+  // Começa a consultar o servidor de tempos em tempos
   @override
   void initState() {
 
@@ -70,6 +73,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Para as consultas e avisa o servidor que saiu da sala
   @override
   void dispose() {
 
@@ -88,6 +92,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Guarda a rodada em que este jogador começou a jogar
   void marcar_painel() {
 
     bool vai_jogar = sala.fase == FaseSala.jogando && sala.eu.participa && !sala.eu.terminou;
@@ -101,6 +106,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Atualiza a tela com o que veio do servidor
   void receber_sala(SalaDesafio sala_nova) {
 
     setState(() {
@@ -115,6 +121,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Envia o resultado pendente ou só pergunta o estado da sala
   Future<SalaDesafio> pedir_estado() {
 
     Resultado? resultado = resultado_pendente;
@@ -130,6 +137,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Consulta o servidor sem atrapalhar uma ação em andamento
   Future<void> consultar() async {
 
     if (consultando || executando || sala_perdida) {
@@ -177,6 +185,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Mostra o aviso de falta de conexão ou de sala encerrada
   void tratar_erro_consulta(ErroServidor erro) {
 
     if (!mounted) {
@@ -195,6 +204,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Executa uma ação na sala e mostra o erro, se houver
   Future<bool> executar(Future<SalaDesafio> Function() pedido) async {
 
     if (executando) {
@@ -258,6 +268,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Confere e envia a palavra secreta
   Future<void> enviar_palavra() async {
 
     if (!chave_palavra.currentState!.validate()) {
@@ -281,6 +292,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Guarda o resultado da partida para enviar ao servidor
   Future<void> terminar_partida(Resultado resultado) async {
 
     resultado_pendente = resultado;
@@ -291,6 +303,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Confirma antes de sair da sala
   Future<void> confirmar_saida(bool ja_saiu, Object? _) async {
 
     if (ja_saiu) {
@@ -317,6 +330,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Monta a tela da sala
   @override
   Widget build(BuildContext context) {
 
@@ -338,6 +352,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Aviso de sala encerrada
   List<Widget> construir_sala_perdida() {
 
     return [
@@ -358,6 +373,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Conteúdo da sala: aviso de conexão, etapa atual e jogadores
   List<Widget> construir_sala() {
 
     return [
@@ -384,6 +400,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Escolhe o que mostrar em cada etapa da rodada
   List<Widget> construir_fase() {
 
     switch (sala.fase) {
@@ -409,6 +426,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Sala esperando gente: código e botão de começar
   List<Widget> construir_espera() {
 
     bool pode_comecar = sala.total_presentes >= 2;
@@ -470,6 +488,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Quem escreve digita a palavra; os outros esperam
   List<Widget> construir_escrita() {
 
     if (!sala.sou_desafiante) {
@@ -541,6 +560,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Painel do jogo para quem adivinha, ou o acompanhamento para quem escreveu
   List<Widget> construir_partida() {
 
     if (rodada_do_painel == sala.rodada) {
@@ -610,6 +630,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Diz se este jogador acertou ou não
   Widget construir_meu_resultado() {
 
     EstiloCaderno estilo = EstiloCaderno.de(context);
@@ -643,6 +664,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Fim da rodada: a palavra e o botão da próxima
   List<Widget> construir_resultado() {
 
     return [

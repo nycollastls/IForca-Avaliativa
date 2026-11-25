@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'estilo_caderno.dart';
 
 
+// Caixa com borda usada nas configurações
 class Cartao extends StatelessWidget {
 
   final Widget conteudo;
@@ -33,6 +34,7 @@ class Cartao extends StatelessWidget {
 }
 
 
+// Caixa com uma chave de liga e desliga
 class CartaoOpcao extends StatelessWidget {
 
   final String titulo;

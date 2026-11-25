@@ -9,6 +9,7 @@ import '../models/palavra.dart';
 import 'armazenamento.dart';
 
 
+// Banco de palavras: as que vêm com o jogo e as cadastradas
 class RepositorioPalavras {
 
   static const String nome_arquivo = 'palavras_cadastradas.json';
@@ -26,6 +27,7 @@ class RepositorioPalavras {
   List<Palavra> get todas => [...palavras_iniciais, ...palavras_cadastradas];
 
 
+  // Carrega as palavras de cada categoria e as cadastradas
   Future<void> carregar() async {
 
     palavras_iniciais.clear();
@@ -42,6 +44,7 @@ class RepositorioPalavras {
   }
 
 
+  // Lê as palavras cadastradas; se o arquivo estiver quebrado, ignora
   Future<List<Palavra>> ler_cadastradas() async {
 
     String? conteudo = await armazenamento.ler(nome_arquivo);
@@ -65,6 +68,7 @@ class RepositorioPalavras {
   }
 
 
+  // Salva uma palavra nova
   Future<void> adicionar(Palavra palavra) async {
 
     await gravar([...palavras_cadastradas, palavra]);
@@ -74,6 +78,7 @@ class RepositorioPalavras {
   }
 
 
+  // Exclui uma palavra cadastrada
   Future<void> remover(Palavra palavra) async {
 
     List<Palavra> restantes = [...palavras_cadastradas]..remove(palavra);
@@ -85,6 +90,7 @@ class RepositorioPalavras {
   }
 
 
+  // Grava as palavras cadastradas em JSON
   Future<void> gravar(List<Palavra> palavras) async {
 
     List<Map<String, dynamic>> lista = [for (Palavra palavra in palavras) palavra.para_json()];
@@ -94,6 +100,7 @@ class RepositorioPalavras {
   }
 
 
+  // Separa as palavras de uma categoria e de um nível
   List<Palavra> filtrar(Categoria categoria, Nivel? nivel) {
 
     List<Palavra> selecionadas = [];
@@ -115,6 +122,7 @@ class RepositorioPalavras {
   }
 
 
+  // Sorteia uma palavra sem repetir a anterior
   Palavra? sortear(Categoria categoria, Nivel? nivel, {Palavra? anterior}) {
 
     List<Palavra> candidatas = filtrar(categoria, nivel);
@@ -138,6 +146,7 @@ class RepositorioPalavras {
 }
 
 
+// Lê o arquivo JSON de uma categoria
 Future<List<Palavra>> carregar_palavras(Categoria categoria) async {
 
   String conteudo = await rootBundle.loadString(categoria.caminho_arquivo);
@@ -147,6 +156,7 @@ Future<List<Palavra>> carregar_palavras(Categoria categoria) async {
 }
 
 
+// Converte o texto JSON em lista de palavras
 List<Palavra> converter_lista(String conteudo) {
 
   List<dynamic> itens = jsonDecode(conteudo) as List<dynamic>;

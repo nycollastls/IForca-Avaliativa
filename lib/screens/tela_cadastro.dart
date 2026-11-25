@@ -9,6 +9,7 @@ import '../widgets/estilo_caderno.dart';
 import '../widgets/tema_caderno.dart';
 
 
+// Tela para cadastrar e excluir palavras próprias
 class TelaCadastro extends StatefulWidget {
 
   final RepositorioPalavras palavras;
@@ -44,6 +45,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
   }
 
 
+  // Valida o formulário e salva a palavra nova
   Future<void> salvar_palavra() async {
 
     if (salvando || !chave_formulario.currentState!.validate()) {
@@ -100,6 +102,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
   }
 
 
+  // Pede confirmação e exclui a palavra
   Future<void> remover_palavra(Palavra palavra) async {
 
     bool confirmou = await confirmar_acao(
@@ -142,6 +145,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
   }
 
 
+  // Monta a tela de cadastro
   @override
   Widget build(BuildContext context) {
 
@@ -172,6 +176,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
   }
 
 
+  // Campos de palavra e dica, escolha de categoria e nível
   Widget construir_formulario() {
 
     return Form(
@@ -231,6 +236,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
   }
 
 
+  // Botões para escolher a categoria
   Widget construir_categorias() {
 
     return Wrap(
@@ -268,6 +274,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
   }
 
 
+  // Botões para escolher o nível
   Widget construir_niveis() {
 
     return Wrap(
@@ -305,6 +312,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
   }
 
 
+  // Linha de uma palavra cadastrada, com o botão de excluir
   Widget construir_item(Palavra palavra) {
 
     return Padding(

@@ -9,6 +9,7 @@ import '../widgets/estilo_caderno.dart';
 import '../widgets/tema_caderno.dart';
 
 
+// Tela de configurações do jogador e de acessibilidade
 class TelaConfiguracoes extends StatelessWidget {
 
   final DadosAplicativo dados;
@@ -17,6 +18,7 @@ class TelaConfiguracoes extends StatelessWidget {
   const TelaConfiguracoes({super.key, required this.dados});
 
 
+  // Salva uma mudança no perfil e avisa se der erro
   Future<void> alterar(BuildContext context, void Function(Perfil perfil) mudanca) async {
 
     try {
@@ -36,6 +38,7 @@ class TelaConfiguracoes extends StatelessWidget {
   }
 
 
+  // Mostra ou esconde o nome no leaderboard, também no servidor
   Future<void> mudar_leaderboard(BuildContext context, bool aparecer) async {
 
     await alterar(context, (perfil) => perfil.aparecer_leaderboard = aparecer);
@@ -51,6 +54,7 @@ class TelaConfiguracoes extends StatelessWidget {
   }
 
 
+  // Monta a tela de configurações
   @override
   Widget build(BuildContext context) {
 
@@ -92,6 +96,7 @@ class TelaConfiguracoes extends StatelessWidget {
   }
 
 
+  // Opções de acessibilidade
   List<Widget> construir_acessibilidade(BuildContext context) {
 
     Perfil perfil = dados.perfis.perfil;
@@ -148,6 +153,7 @@ class TelaConfiguracoes extends StatelessWidget {
   }
 
 
+  // Mostra o nome do jogador com o botão para mudar
   Widget construir_nome(BuildContext context) {
 
     String nome = dados.perfis.perfil.nome;
@@ -173,6 +179,7 @@ class TelaConfiguracoes extends StatelessWidget {
   }
 
 
+  // Escolha do tamanho do texto
   Widget construir_tamanho(BuildContext context) {
 
     return Cartao(

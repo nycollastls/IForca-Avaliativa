@@ -6,6 +6,15 @@ services:
     autoDeployTrigger: commit
     buildCommand: bash scripts/compilar_render.sh
     staticPublishPath: ./build/web
+    buildFilter:
+      paths:
+        - assets/**
+        - lib/**
+        - scripts/**
+        - web/**
+        - pubspec.lock
+        - pubspec.yaml
+        - render.yaml
     envVars:
       - key: ENDERECO_SERVIDOR
         value: https://iforca-servidor.onrender.com
@@ -26,3 +35,6 @@ services:
     dockerfilePath: ./servidor/Dockerfile
     dockerContext: ./servidor
     healthCheckPath: /saude
+    buildFilter:
+      paths:
+        - servidor/**

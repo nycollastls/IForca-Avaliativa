@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'tema_caderno.dart';
+import 'estilo_caderno.dart';
 
 
 class DesenhoForca extends StatelessWidget {
@@ -18,6 +18,7 @@ class DesenhoForca extends StatelessWidget {
   Widget build(BuildContext context) {
 
     bool sem_animacao = MediaQuery.disableAnimationsOf(context);
+    EstiloCaderno estilo = EstiloCaderno.de(context);
 
     return Semantics(
 
@@ -32,7 +33,7 @@ class DesenhoForca extends StatelessWidget {
         builder: (context, progresso, _) => CustomPaint(
 
           size: const Size(220, 220),
-          painter: PintorForca(progresso),
+          painter: PintorForca(progresso, estilo),
 
         ),
 
@@ -48,9 +49,10 @@ class DesenhoForca extends StatelessWidget {
 class PintorForca extends CustomPainter {
 
   final double progresso;
+  final EstiloCaderno estilo;
 
 
-  const PintorForca(this.progresso);
+  const PintorForca(this.progresso, this.estilo);
 
 
   static const List<List<Offset>> linhas_estrutura = [
@@ -90,7 +92,7 @@ class PintorForca extends CustomPainter {
 
   void desenhar_estrutura(Canvas canvas) {
 
-    Paint caneta_azul = criar_caneta(cor_tinta, 5);
+    Paint caneta_azul = criar_caneta(estilo.tinta, 5 + estilo.espessura_extra);
 
     for (List<Offset> linha in linhas_estrutura) {
 
@@ -103,7 +105,7 @@ class PintorForca extends CustomPainter {
 
   void desenhar_boneco(Canvas canvas) {
 
-    Paint caneta_vermelha = criar_caneta(cor_caneta_vermelha, 4);
+    Paint caneta_vermelha = criar_caneta(estilo.vermelha, 4 + estilo.espessura_extra);
     double parte_cabeca = calcular_parte(0);
 
     if (parte_cabeca > 0) {
@@ -150,6 +152,10 @@ class PintorForca extends CustomPainter {
 
 
   @override
-  bool shouldRepaint(PintorForca oldDelegate) => oldDelegate.progresso != progresso;
+  bool shouldRepaint(PintorForca oldDelegate) {
+
+    return oldDelegate.progresso != progresso || oldDelegate.estilo != estilo;
+
+  }
 
 }

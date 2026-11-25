@@ -195,6 +195,7 @@ class _TelaDueloState extends State<TelaDuelo> {
       Form(
 
         key: chave_nomes,
+        autovalidateMode: AutovalidateMode.onUserInteractionIfError,
 
         child: Column(
 
@@ -271,6 +272,7 @@ class _TelaDueloState extends State<TelaDuelo> {
       Form(
 
         key: chave_palavra,
+        autovalidateMode: AutovalidateMode.onUserInteractionIfError,
 
         child: Column(
 

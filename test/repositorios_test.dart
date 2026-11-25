@@ -4,13 +4,16 @@ import 'package:forca/models/categoria.dart';
 import 'package:forca/models/nivel.dart';
 import 'package:forca/models/palavra.dart';
 import 'package:forca/models/resultado.dart';
+import 'package:forca/models/tamanho_texto.dart';
 import 'package:forca/services/dados_aplicativo.dart';
 import 'package:forca/services/repositorio_palavras.dart';
+import 'package:forca/services/repositorio_perfil.dart';
 import 'package:forca/services/repositorio_placar.dart';
 import 'package:forca/services/texto.dart';
 import 'package:forca/services/validador.dart';
 
 import 'armazenamento_memoria.dart';
+import 'cliente_teste.dart';
 
 
 const Palavra palavra_teste = Palavra(
@@ -25,7 +28,7 @@ const Palavra palavra_teste = Palavra(
 
 Future<DadosAplicativo> abrir_dados(ArmazenamentoMemoria armazenamento) async {
 
-  DadosAplicativo dados = DadosAplicativo(armazenamento);
+  DadosAplicativo dados = DadosAplicativo(armazenamento, ClienteTeste());
 
   await dados.carregar();
 
@@ -116,6 +119,46 @@ void main() {
     DadosAplicativo dados_finais = await abrir_dados(armazenamento);
 
     expect(dados_finais.placares.duelo, isNull);
+
+  });
+
+
+  test('perfil continua salvo ao reabrir e mantém a identificação', () async {
+
+    ArmazenamentoMemoria armazenamento = ArmazenamentoMemoria();
+    DadosAplicativo dados = await abrir_dados(armazenamento);
+
+    await dados.perfis.mudar_nome('  Ana   Maria ');
+    await dados.perfis.alterar((perfil) {
+
+      perfil.reduzir_animacoes = true;
+      perfil.alto_contraste = true;
+      perfil.tamanho_texto = TamanhoTexto.grande;
+
+    });
+
+    DadosAplicativo dados_reabertos = await abrir_dados(armazenamento);
+
+    expect(dados_reabertos.perfis.perfil.nome, 'Ana Maria');
+    expect(dados_reabertos.perfis.perfil.reduzir_animacoes, isTrue);
+    expect(dados_reabertos.perfis.perfil.alto_contraste, isTrue);
+    expect(dados_reabertos.perfis.perfil.tamanho_texto, TamanhoTexto.grande);
+    expect(dados_reabertos.perfis.perfil.id, dados.perfis.perfil.id);
+    expect(dados.perfis.perfil.id, matches(RegExp(r'^[0-9a-f]{32}$')));
+
+  });
+
+
+  test('perfil salvo por versão anterior continua valendo', () async {
+
+    ArmazenamentoMemoria armazenamento = ArmazenamentoMemoria();
+
+    armazenamento.arquivos[RepositorioPerfil.nome_arquivo] = '{"id": "abc", "nome": "Ana"}';
+
+    DadosAplicativo dados = await abrir_dados(armazenamento);
+
+    expect(dados.perfis.perfil.nome, 'Ana');
+    expect(dados.perfis.perfil.tamanho_texto, TamanhoTexto.normal);
 
   });
 

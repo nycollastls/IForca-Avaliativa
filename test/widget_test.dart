@@ -11,6 +11,7 @@ import 'package:forca/screens/tela_jogo.dart';
 import 'package:forca/services/dados_aplicativo.dart';
 
 import 'armazenamento_memoria.dart';
+import 'cliente_teste.dart';
 
 
 const Palavra palavra_teste = Palavra(
@@ -23,11 +24,12 @@ const Palavra palavra_teste = Palavra(
 );
 
 
-Future<DadosAplicativo> abrir_aplicativo(WidgetTester tester) async {
+Future<DadosAplicativo> abrir_aplicativo(WidgetTester tester, {ClienteTeste? cliente, String nome = ''}) async {
 
-  DadosAplicativo dados = DadosAplicativo(ArmazenamentoMemoria());
+  DadosAplicativo dados = DadosAplicativo(ArmazenamentoMemoria(), cliente ?? ClienteTeste());
 
   await tester.runAsync(dados.carregar);
+  dados.perfis.perfil.nome = nome;
   await tester.pumpWidget(Forca(dados: dados));
 
   return dados;
@@ -45,11 +47,35 @@ Future<void> tocar(WidgetTester tester, String texto) async {
 }
 
 
+Future<void> voltar(WidgetTester tester) async {
+
+  await tester.tap(find.byType(BackButton));
+  await tester.pumpAndSettle();
+
+}
+
+
 void main() {
+
+  testWidgets('tela inicial mostra modos, leaderboard, usuário e configurações', (WidgetTester tester) async {
+
+    await abrir_aplicativo(tester, nome: 'Ana');
+
+    expect(find.text('Ana'), findsOneWidget);
+    expect(find.text('Um aparelho'), findsOneWidget);
+    expect(find.text('Desafio multiplayer'), findsOneWidget);
+    expect(find.text('Leaderboard'), findsOneWidget);
+    expect(find.byTooltip('Configurações'), findsOneWidget);
+    expect(find.text('Forca da Programação'), findsOneWidget);
+    expect(find.textContaining('pontos'), findsNothing);
+
+  });
+
 
   testWidgets('exibe as opções de categoria', (WidgetTester tester) async {
 
     await abrir_aplicativo(tester);
+    await tocar(tester, 'Um aparelho');
 
     expect(find.text('C'), findsOneWidget);
     expect(find.text('Dart'), findsOneWidget);
@@ -62,23 +88,22 @@ void main() {
 
     await abrir_aplicativo(tester);
 
+    await tocar(tester, 'Um aparelho');
     await tocar(tester, 'Dart');
     expect(find.text('Forca: Dart'), findsOneWidget);
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-
-    await tocar(tester, 'Ver placar');
-    expect(find.text('Vitórias por categoria e nível'), findsOneWidget);
-    await tester.pageBack();
-    await tester.pumpAndSettle();
-
-    await tocar(tester, 'Cadastrar palavras');
-    expect(find.text('Salvar palavra'), findsOneWidget);
-    await tester.pageBack();
-    await tester.pumpAndSettle();
+    await voltar(tester);
 
     await tocar(tester, 'Dois jogadores');
     expect(find.text('Começar duelo'), findsOneWidget);
+    await voltar(tester);
+    await voltar(tester);
+
+    await tocar(tester, 'Estatísticas');
+    expect(find.text('Suas vitórias por categoria e nível'), findsOneWidget);
+    await voltar(tester);
+
+    await tocar(tester, 'Cadastrar palavras');
+    expect(find.text('Salvar palavra'), findsOneWidget);
 
   });
 
@@ -162,6 +187,9 @@ void main() {
     expect(find.text('Digite a palavra.'), findsOneWidget);
 
     await tester.enterText(find.byType(TextFormField).first, 'printf');
+    await tester.pumpAndSettle();
+    expect(find.text('Digite a palavra.'), findsNothing);
+
     await tester.enterText(find.byType(TextFormField).last, 'Mostra texto');
     await tocar(tester, 'Salvar palavra');
     expect(find.textContaining('já está cadastrada'), findsOneWidget);
@@ -178,6 +206,7 @@ void main() {
 
     DadosAplicativo dados = await abrir_aplicativo(tester);
 
+    await tocar(tester, 'Um aparelho');
     await tocar(tester, 'Dois jogadores');
     await tester.enterText(find.byType(TextFormField).first, 'Ana');
     await tester.enterText(find.byType(TextFormField).last, 'Beto');
@@ -204,14 +233,13 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
 
-    await abrir_aplicativo(tester);
+    await abrir_aplicativo(tester, nome: 'Nome com 15 let');
 
-    for (String opcao in ['Lógica', 'Ver placar', 'Cadastrar palavras', 'Dois jogadores']) {
+    for (String opcao in ['Um aparelho', 'Desafio multiplayer', 'Leaderboard', 'Estatísticas', 'Cadastrar palavras']) {
 
       await tocar(tester, opcao);
       expect(tester.takeException(), isNull, reason: opcao);
-      await tester.pageBack();
-      await tester.pumpAndSettle();
+      await voltar(tester);
 
     }
 

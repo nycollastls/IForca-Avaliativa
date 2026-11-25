@@ -3,34 +3,35 @@ import 'package:flutter/material.dart';
 import '../models/categoria.dart';
 import '../models/nivel.dart';
 import '../models/placar.dart';
-import '../services/repositorio_placar.dart';
+import '../services/dados_aplicativo.dart';
+import '../widgets/estilo_caderno.dart';
 import '../widgets/tema_caderno.dart';
 
 
-class TelaPlacar extends StatefulWidget {
+class TelaEstatisticas extends StatefulWidget {
 
-  final RepositorioPlacar placares;
+  final DadosAplicativo dados;
 
 
-  const TelaPlacar({super.key, required this.placares});
+  const TelaEstatisticas({super.key, required this.dados});
 
 
   @override
-  State<TelaPlacar> createState() => _TelaPlacarState();
+  State<TelaEstatisticas> createState() => _TelaEstatisticasState();
 
 }
 
 
-class _TelaPlacarState extends State<TelaPlacar> {
+class _TelaEstatisticasState extends State<TelaEstatisticas> {
 
   Future<void> zerar_placar() async {
 
     bool confirmou = await confirmar_acao(
 
       context,
-      'Zerar o placar?',
+      'Zerar suas estatísticas?',
       'Os pontos, as vitórias e as sequências serão apagados.',
-      'Zerar placar',
+      'Zerar estatísticas',
 
     );
 
@@ -42,13 +43,13 @@ class _TelaPlacarState extends State<TelaPlacar> {
 
     try {
 
-      await widget.placares.zerar_placar();
+      await widget.dados.placares.zerar_placar();
 
     } on Object {
 
       if (mounted) {
 
-        mostrar_aviso(context, 'Não foi possível salvar o placar zerado.');
+        mostrar_aviso(context, 'Não foi possível salvar as estatísticas zeradas.');
 
       }
 
@@ -66,13 +67,15 @@ class _TelaPlacarState extends State<TelaPlacar> {
   @override
   Widget build(BuildContext context) {
 
-    Placar placar = widget.placares.placar;
+    Placar placar = widget.dados.placares.placar;
 
     return PaginaCaderno(
 
-      titulo: 'Placar',
+      titulo: 'Estatísticas',
 
       conteudo: [
+
+        const Subtitulo('Seu placar'),
 
         construir_linha('Pontos', placar.pontos),
         construir_linha('Vitórias', placar.vitorias),
@@ -80,7 +83,7 @@ class _TelaPlacarState extends State<TelaPlacar> {
         construir_linha('Sequência atual de acertos', placar.sequencia_atual),
         construir_linha('Melhor sequência de acertos', placar.melhor_sequencia),
 
-        const Subtitulo('Vitórias por categoria e nível'),
+        const Subtitulo('Suas vitórias por categoria e nível'),
 
         construir_tabela(placar),
 
@@ -93,7 +96,7 @@ class _TelaPlacarState extends State<TelaPlacar> {
           child: OutlinedButton(
 
             onPressed: zerar_placar,
-            child: const Text('Zerar placar'),
+            child: const Text('Zerar estatísticas'),
 
           ),
 
@@ -133,13 +136,13 @@ class _TelaPlacarState extends State<TelaPlacar> {
 
     return Table(
 
-      border: TableBorder.all(color: cor_tinta),
+      border: TableBorder.all(color: EstiloCaderno.de(context).tinta),
 
       children: [
 
         TableRow(
 
-          decoration: const BoxDecoration(color: cor_marca_texto),
+          decoration: BoxDecoration(color: EstiloCaderno.de(context).marca_texto),
 
           children: [
 
@@ -178,8 +181,8 @@ class _TelaPlacarState extends State<TelaPlacar> {
 
     return Padding(
 
-      padding: const EdgeInsets.all(10),
-      child: Text(texto, textAlign: TextAlign.center),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+      child: FittedBox(fit: BoxFit.scaleDown, child: Text(texto)),
 
     );
 

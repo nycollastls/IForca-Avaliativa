@@ -5,6 +5,7 @@ import '../models/nivel.dart';
 import '../models/palavra.dart';
 import '../services/repositorio_palavras.dart';
 import '../services/validador.dart';
+import '../widgets/estilo_caderno.dart';
 import '../widgets/tema_caderno.dart';
 
 
@@ -176,6 +177,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
     return Form(
 
       key: chave_formulario,
+      autovalidateMode: AutovalidateMode.onUserInteractionIfError,
 
       child: Column(
 
@@ -244,7 +246,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
 
             label: Text(categoria.nome),
             selected: categoria_escolhida == categoria,
-            selectedColor: cor_marca_texto,
+            selectedColor: EstiloCaderno.de(context).marca_texto,
             backgroundColor: Colors.white,
 
             onSelected: (_) {
@@ -281,7 +283,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
 
             label: Text(nivel.nome),
             selected: nivel_escolhido == nivel,
-            selectedColor: cor_marca_texto,
+            selectedColor: EstiloCaderno.de(context).marca_texto,
             backgroundColor: Colors.white,
 
             onSelected: (_) {
@@ -312,7 +314,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
       child: Material(
 
         color: Colors.white,
-        shape: const RoundedRectangleBorder(side: BorderSide(color: cor_tinta)),
+        shape: RoundedRectangleBorder(side: BorderSide(color: EstiloCaderno.de(context).tinta)),
 
         child: ListTile(
 
@@ -323,7 +325,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
 
             onPressed: () => remover_palavra(palavra),
             tooltip: 'Excluir palavra',
-            icon: const Icon(Icons.delete_outline, color: cor_caneta_vermelha),
+            icon: Icon(Icons.delete_outline, color: EstiloCaderno.de(context).vermelha),
 
           ),
 

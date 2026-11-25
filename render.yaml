@@ -1,0 +1,28 @@
+services:
+  - type: web
+    runtime: static
+    name: iforca-avaliativa
+    branch: main
+    autoDeployTrigger: commit
+    buildCommand: bash scripts/compilar_render.sh
+    staticPublishPath: ./build/web
+    envVars:
+      - key: ENDERECO_SERVIDOR
+        value: https://iforca-servidor.onrender.com
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+
+  - type: web
+    runtime: docker
+    name: iforca-servidor
+    plan: free
+    branch: main
+    autoDeployTrigger: commit
+    dockerfilePath: ./servidor/Dockerfile
+    dockerContext: ./servidor
+    healthCheckPath: /saude

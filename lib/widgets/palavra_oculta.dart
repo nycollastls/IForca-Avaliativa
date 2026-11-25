@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/jogo_forca.dart';
-import 'tema_caderno.dart';
+import 'estilo_caderno.dart';
 
 
 class PalavraOculta extends StatelessWidget {
@@ -12,15 +12,15 @@ class PalavraOculta extends StatelessWidget {
   const PalavraOculta({super.key, required this.jogo});
 
 
-  Color escolher_cor(String letra) {
+  Color escolher_cor(String letra, EstiloCaderno estilo) {
 
     if (jogo.perdeu && !jogo.letra_revelada(letra)) {
 
-      return cor_caneta_vermelha;
+      return estilo.vermelha;
 
     }
 
-    return jogo.venceu ? cor_acerto : cor_tinta;
+    return jogo.venceu ? estilo.acerto : estilo.tinta;
 
   }
 
@@ -28,10 +28,13 @@ class PalavraOculta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    EstiloCaderno estilo = EstiloCaderno.de(context);
+    double escala = MediaQuery.textScalerOf(context).scale(1);
     List<String> letras = jogo.letras_exibidas;
 
     return Semantics(
 
+      liveRegion: true,
       label: 'Palavra: ${letras.map((letra) => letra == '_' ? 'oculta' : letra).join(', ')}',
 
       child: ExcludeSemantics(
@@ -44,7 +47,7 @@ class PalavraOculta extends StatelessWidget {
 
           children: [
 
-            for (String letra in letras) construir_casa(letra),
+            for (String letra in letras) construir_casa(letra, escala, estilo),
 
           ],
 
@@ -57,26 +60,35 @@ class PalavraOculta extends StatelessWidget {
   }
 
 
-  Widget construir_casa(String letra) {
+  Widget construir_casa(String letra, double escala, EstiloCaderno estilo) {
 
     bool espaco = letra == ' ';
 
     return Container(
 
-      width: espaco ? 14 : 30,
-      height: 44,
+      width: (espaco ? 14 : 30) * escala,
+      height: 44 * escala,
       alignment: Alignment.center,
 
       decoration: BoxDecoration(
 
-        border: espaco ? null : const Border(bottom: BorderSide(color: cor_tinta, width: 3)),
+        border: espaco ? null : Border(bottom: BorderSide(color: estilo.tinta, width: 3 + estilo.espessura_extra)),
 
       ),
 
       child: Text(
 
         letra == '_' ? '' : letra,
-        style: TextStyle(fontSize: 28, height: 1, fontWeight: FontWeight.w700, color: escolher_cor(letra)),
+
+        style: TextStyle(
+
+          fontSize: 28,
+          height: 1,
+          letterSpacing: 0,
+          fontWeight: FontWeight.w700,
+          color: escolher_cor(letra, estilo),
+
+        ),
 
       ),
 

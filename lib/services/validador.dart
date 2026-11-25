@@ -7,6 +7,7 @@ const int maximo_caracteres = 18;
 const int minimo_dica = 5;
 const int maximo_dica = 100;
 const int maximo_nome = 15;
+const int tamanho_codigo = 5;
 
 
 String? validar_texto(String? valor) {
@@ -101,6 +102,21 @@ String? validar_nome(String? valor) {
   if (nome.length > maximo_nome) {
 
     return 'Use no máximo $maximo_nome caracteres.';
+
+  }
+
+  return null;
+
+}
+
+
+String? validar_codigo(String? valor) {
+
+  String codigo = (valor ?? '').trim().toUpperCase();
+
+  if (!RegExp('^[A-Z]{$tamanho_codigo}\$').hasMatch(codigo)) {
+
+    return 'O código tem $tamanho_codigo letras.';
 
   }
 

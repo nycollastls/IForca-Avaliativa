@@ -17,6 +17,8 @@ const String endereco_servidor = String.fromEnvironment(
 const Duration limite_inicial = Duration(seconds: 80);
 const Duration limite_rapido = Duration(seconds: 12);
 
+const int maximo_tentativas = 3;
+
 
 class ErroServidor implements Exception {
 
@@ -42,11 +44,37 @@ class ServicoOnline {
 
   Future<Map<String, dynamic>> pedir(String caminho, Map<String, dynamic> dados, Duration limite) async {
 
-    RespostaHttp resposta;
+    for (int tentativa = 1; tentativa <= maximo_tentativas; tentativa++) {
+
+      RespostaHttp resposta = await enviar(caminho, dados, limite);
+      Map<String, dynamic>? conteudo = ler_conteudo(resposta.corpo);
+
+      if (conteudo != null && resposta.codigo == 200) {
+
+        return conteudo;
+
+      }
+
+      if (conteudo != null) {
+
+        Object? mensagem = conteudo['erro'];
+
+        throw ErroServidor(mensagem is String ? mensagem : 'O servidor recusou o pedido.', codigo: resposta.codigo);
+
+      }
+
+    }
+
+    throw const ErroServidor('O servidor não respondeu como esperado. Tente de novo em instantes.');
+
+  }
+
+
+  Future<RespostaHttp> enviar(String caminho, Map<String, dynamic> dados, Duration limite) async {
 
     try {
 
-      resposta = await cliente.enviar('$endereco_servidor/$caminho', jsonEncode(dados)).timeout(limite);
+      return await cliente.enviar('$endereco_servidor/$caminho', jsonEncode(dados)).timeout(limite);
 
     } on Object {
 
@@ -54,27 +82,20 @@ class ServicoOnline {
 
     }
 
-    Map<String, dynamic> conteudo;
+  }
+
+
+  Map<String, dynamic>? ler_conteudo(String corpo) {
 
     try {
 
-      conteudo = jsonDecode(resposta.corpo) as Map<String, dynamic>;
+      return jsonDecode(corpo) as Map<String, dynamic>;
 
     } on Object {
 
-      throw const ErroServidor('O servidor não respondeu como esperado. Tente de novo em instantes.');
+      return null;
 
     }
-
-    if (resposta.codigo != 200) {
-
-      Object? mensagem = conteudo['erro'];
-
-      throw ErroServidor(mensagem is String ? mensagem : 'O servidor recusou o pedido.', codigo: resposta.codigo);
-
-    }
-
-    return conteudo;
 
   }
 

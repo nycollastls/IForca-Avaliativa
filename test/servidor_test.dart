@@ -419,6 +419,7 @@ void main() {
 
     expect(resposta.statusCode, 200);
     expect(resposta.headers.value('access-control-allow-origin'), '*');
+    expect(resposta.headers.contentLength, greaterThan(0));
     expect(dados['codigo'], matches(RegExp(r'^[A-Z]{5}$')));
 
     HttpClientRequest pedido_invalido = await cliente.post('127.0.0.1', servidor.port, '/salas');

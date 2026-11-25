@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:forca/main.dart';
+import 'package:forca/models/categoria.dart';
+import 'package:forca/models/nivel.dart';
+import 'package:forca/models/palavra.dart';
 import 'package:forca/models/perfil.dart';
+import 'package:forca/models/resultado.dart';
 import 'package:forca/models/sala_desafio.dart';
 import 'package:forca/screens/tela_sala.dart';
 import 'package:forca/services/dados_aplicativo.dart';
@@ -165,6 +169,46 @@ void main() {
     await tocar(tester, find.widgetWithText(FilledButton, 'Sair da sala'));
     expect(find.text('Criar sala'), findsOneWidget);
     expect(cliente.aplicacao.salas[codigo]!.jogadores.length, 1);
+
+  });
+
+
+  test('resposta vazia é pedida de novo sem repetir o efeito', () async {
+
+    ClienteTeste cliente = ClienteTeste();
+    ServicoOnline servico = ServicoOnline(cliente);
+    Perfil anfitriao = Perfil(id: 'c' * 32, nome: 'Ana');
+    Perfil amigo = criar_amigo();
+    String codigo = (await servico.criar_sala(anfitriao, true)).codigo;
+
+    cliente.respostas_vazias = 1;
+    expect((await servico.entrar_sala(amigo, codigo)).jogadores.length, 2);
+
+    cliente.respostas_vazias = 1;
+    expect((await servico.iniciar_sala(anfitriao, codigo)).rodada, 1);
+
+    cliente.respostas_vazias = 1;
+    expect((await servico.enviar_palavra(anfitriao, codigo, 'laço', 'Repete instruções')).fase, FaseSala.jogando);
+
+    cliente.respostas_vazias = 1;
+
+    Resultado resultado = const Resultado(
+
+      palavra: Palavra(texto: 'laço', dica: 'Dica', categoria: Categoria.logica, nivel: Nivel.medio),
+      venceu: true,
+      pontos: 40,
+
+    );
+
+    SalaDesafio sala = await servico.enviar_resultado(amigo, codigo, 1, resultado);
+
+    expect(sala.jogadores.last.pontos, 40);
+
+    cliente.respostas_vazias = 1;
+    expect((await servico.proxima_rodada(amigo, codigo, 1)).rodada, 2);
+
+    cliente.respostas_vazias = 9;
+    await expectLater(servico.consultar_sala(amigo, codigo), throwsA(isA<ErroServidor>()));
 
   });
 

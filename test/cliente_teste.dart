@@ -13,6 +13,7 @@ class ClienteTeste implements ClienteHttp {
 
   bool fora_do_ar = false;
   int total_pedidos = 0;
+  int respostas_vazias = 0;
 
 
   ClienteTeste({Aplicacao? aplicacao}) : aplicacao = aplicacao ?? Aplicacao(leaderboard: Leaderboard());
@@ -33,7 +34,17 @@ class ClienteTeste implements ClienteHttp {
 
     try {
 
-      return RespostaHttp(200, jsonEncode(aplicacao.processar(Uri.parse(endereco).pathSegments, dados)));
+      String conteudo = jsonEncode(aplicacao.processar(Uri.parse(endereco).pathSegments, dados));
+
+      if (respostas_vazias > 0) {
+
+        respostas_vazias--;
+
+        return const RespostaHttp(200, '');
+
+      }
+
+      return RespostaHttp(200, conteudo);
 
     } on ErroRegra catch (erro) {
 

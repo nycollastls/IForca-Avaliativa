@@ -69,11 +69,14 @@ class Aplicacao {
 
   Future<void> responder(HttpResponse resposta, int codigo_http, Map<String, dynamic> conteudo) async {
 
+    List<int> bytes = utf8.encode(jsonEncode(conteudo));
+
     resposta.statusCode = codigo_http;
     resposta.headers.contentType = ContentType.json;
     resposta.headers.set('Access-Control-Allow-Origin', '*');
     resposta.headers.set('Cache-Control', 'no-store');
-    resposta.write(jsonEncode(conteudo));
+    resposta.contentLength = bytes.length;
+    resposta.add(bytes);
 
     await resposta.close();
 

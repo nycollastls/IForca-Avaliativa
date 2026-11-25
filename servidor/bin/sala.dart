@@ -317,7 +317,16 @@ class Sala {
 
   void definir_palavra(String id, String palavra_nova, String dica_nova, DateTime agora) {
 
-    if (fase != Fase.escrevendo || buscar_jogador(id).numero != numero_desafiante) {
+    bool sou_desafiante = buscar_jogador(id).numero == numero_desafiante;
+    bool pedido_repetido = fase == Fase.jogando && palavra == palavra_nova && dica == dica_nova;
+
+    if (sou_desafiante && pedido_repetido) {
+
+      return;
+
+    }
+
+    if (fase != Fase.escrevendo || !sou_desafiante) {
 
       throw const ErroRegra(409, 'Agora não é a sua vez de escrever.');
 

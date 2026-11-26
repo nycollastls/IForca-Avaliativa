@@ -127,3 +127,43 @@ String ler_dica(Map<String, dynamic> dados) {
   return dica;
 
 }
+
+
+// Letras com acento e a versão sem acento
+const Map<String, String> letras_sem_acento = {
+
+  'Á': 'A', 'À': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A',
+  'É': 'E', 'È': 'E', 'Ê': 'E', 'Ë': 'E',
+  'Í': 'I', 'Ì': 'I', 'Î': 'I', 'Ï': 'I',
+  'Ó': 'O', 'Ò': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O',
+  'Ú': 'U', 'Ù': 'U', 'Û': 'U', 'Ü': 'U',
+  'Ç': 'C', 'Ñ': 'N',
+
+};
+
+
+// Passa a letra para maiúscula e sem acento
+String normalizar_letra(String letra) {
+
+  String maiuscula = letra.toUpperCase();
+
+  return letras_sem_acento[maiuscula] ?? maiuscula;
+
+}
+
+
+// Lê as letras que o jogador já tentou
+Set<String> ler_letras(Map<String, dynamic> dados) {
+
+  Object? valor = dados['letras'];
+  RegExp formato = RegExp(r'^[A-Z]$');
+
+  if (valor is! List || valor.length > 26 || valor.any((letra) => letra is! String || !formato.hasMatch(letra))) {
+
+    throw const ErroRegra(400, 'Letras inválidas.');
+
+  }
+
+  return {for (Object? letra in valor) letra as String};
+
+}

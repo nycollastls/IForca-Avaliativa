@@ -391,6 +391,133 @@ void main() {
   });
 
 
+  test('quem não está adivinhando acompanha a forca de quem está', () {
+
+    Cenario cenario = Cenario();
+
+    cenario.montar_sala(3);
+    cenario.comecar_rodada();
+    cenario.agir(2, 'progresso', {'rodada': 1, 'letras': ['L', 'C', 'X'], 'dica_usada': true});
+
+    Map<String, dynamic> progresso = cenario.agir(1, 'estado')['jogadores'][1]['progresso'] as Map<String, dynamic>;
+
+    expect(progresso['mascara'], ['L', '_', 'Ç', '_']);
+    expect(progresso['erradas'], ['X']);
+    expect(progresso['dica_usada'], isTrue);
+
+    expect(cenario.agir(3, 'estado')['jogadores'][1]['progresso'], isNull);
+
+    cenario.terminar(3);
+
+    expect(cenario.agir(3, 'estado')['jogadores'][1]['progresso'], isNotNull);
+
+  });
+
+
+  test('quem entra no meio acompanha sem receber a palavra', () {
+
+    Cenario cenario = Cenario();
+
+    cenario.montar_sala(2);
+    cenario.comecar_rodada();
+    cenario.agir(2, 'progresso', {'rodada': 1, 'letras': ['A'], 'dica_usada': false});
+    cenario.entrar(3);
+
+    Map<String, dynamic> visao = cenario.agir(3, 'estado');
+
+    expect(visao['palavra'], '');
+    expect(visao['jogadores'][1]['progresso']['mascara'], ['_', 'A', '_', '_']);
+    expect(visao.toString().toUpperCase(), isNot(contains('LAÇO')));
+
+  });
+
+
+  test('andamento ignora outra rodada, quem escreveu e letras inválidas', () {
+
+    Cenario cenario = Cenario();
+
+    cenario.montar_sala(2);
+    cenario.comecar_rodada();
+    cenario.agir(1, 'progresso', {'rodada': 1, 'letras': ['L'], 'dica_usada': false});
+    cenario.agir(2, 'progresso', {'rodada': 9, 'letras': ['L'], 'dica_usada': false});
+
+    expect(cenario.agir(1, 'estado')['jogadores'][1]['progresso']['mascara'], ['_', '_', '_', '_']);
+    expect(() => cenario.agir(2, 'progresso', {'rodada': 1, 'letras': ['ab'], 'dica_usada': false}), lanca_erro(400));
+    expect(() => cenario.agir(2, 'progresso', {'rodada': 1, 'letras': List.filled(27, 'A'), 'dica_usada': false}), lanca_erro(400));
+
+  });
+
+
+  test('resultado leva as últimas letras e a rodada nova começa limpa', () {
+
+    Cenario cenario = Cenario();
+
+    cenario.montar_sala(3);
+    cenario.comecar_rodada();
+    cenario.agir(2, 'resultado', {'rodada': 1, 'venceu': true, 'pontos': 40, 'letras': ['A', 'C', 'L', 'O'], 'dica_usada': false});
+
+    expect(cenario.agir(1, 'estado')['jogadores'][1]['progresso']['mascara'], ['L', 'A', 'Ç', 'O']);
+
+    cenario.terminar(3);
+    cenario.agir(1, 'proxima', {'rodada': 1});
+    cenario.agir(2, 'palavra', {'palavra': 'pilha', 'dica': 'Último a entrar, primeiro a sair'});
+
+    expect(cenario.agir(2, 'estado')['jogadores'][0]['progresso']['mascara'], ['_', '_', '_', '_', '_']);
+
+  });
+
+
+  test('quem entra só para assistir não joga nem conta como jogador', () {
+
+    Cenario cenario = Cenario();
+
+    cenario.montar_sala(1, publica: true);
+    cenario.agir(2, 'entrar', {'nome': 'Plateia', 'mostrar_nome': true, 'espectador': true});
+
+    expect(() => cenario.agir(1, 'iniciar'), lanca_erro(409));
+
+    cenario.entrar(3);
+    cenario.comecar_rodada();
+
+    Map<String, dynamic> visao = cenario.agir(2, 'estado');
+
+    expect(visao['jogadores'][1]['espectador'], isTrue);
+    expect(visao['jogadores'][1]['participa'], isFalse);
+    expect(visao['jogadores'][2]['progresso'], isNotNull);
+
+    expect(() => cenario.agir(2, 'iniciar'), lanca_erro(403));
+    expect(() => cenario.agir(2, 'palavra', {'palavra': 'pilha', 'dica': 'Estrutura de dados'}), lanca_erro(403));
+    expect(() => cenario.agir(2, 'progresso', {'rodada': 1, 'letras': ['A'], 'dica_usada': false}), lanca_erro(403));
+    expect(() => cenario.terminar(2), lanca_erro(403));
+    expect(() => cenario.agir(2, 'encerrar', {'rodada': 1}), lanca_erro(403));
+
+    cenario.terminar(3);
+
+    expect(() => cenario.agir(2, 'proxima', {'rodada': 1}), lanca_erro(403));
+    expect(cenario.agir(1, 'proxima', {'rodada': 1})['numero_desafiante'], 3);
+    expect(cenario.listar().single['jogadores'].length, 2);
+
+  });
+
+
+  test('quem assiste não ocupa vaga de jogador', () {
+
+    Cenario cenario = Cenario();
+
+    cenario.montar_sala(6);
+
+    for (int pessoa = 7; pessoa <= 16; pessoa++) {
+
+      cenario.agir(pessoa, 'entrar', {'nome': 'Plateia', 'mostrar_nome': true, 'espectador': true});
+
+    }
+
+    expect(() => cenario.agir(17, 'entrar', {'nome': 'Plateia', 'mostrar_nome': true, 'espectador': true}), lanca_erro(409));
+    expect(() => cenario.entrar(18), lanca_erro(409));
+
+  });
+
+
   test('recusa identificação e nome inválidos', () {
 
     Cenario cenario = Cenario();

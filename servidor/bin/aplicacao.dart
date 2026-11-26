@@ -257,7 +257,7 @@ class Aplicacao {
     if (acao == 'entrar') {
 
       sala.atualizar(agora);
-      sala.entrar(id, ler_nome(dados), ler_opcao(dados, 'mostrar_nome'), agora);
+      sala.entrar(id, ler_nome(dados), ler_opcao(dados, 'mostrar_nome'), agora, espectador: dados['espectador'] == true);
 
     }
 
@@ -294,7 +294,17 @@ class Aplicacao {
         int rodada = ler_numero(dados, 'rodada', 0, 1 << 30);
         int pontos = ler_numero(dados, 'pontos', -desconto_maximo_rodada, pontos_maximos_rodada);
 
+        if (dados.containsKey('letras')) {
+
+          sala.registrar_progresso(id, rodada, ler_letras(dados), dados['dica_usada'] == true);
+
+        }
+
         sala.registrar_resultado(id, rodada, dados['venceu'] == true, pontos, agora);
+
+      case 'progresso':
+
+        sala.registrar_progresso(id, ler_numero(dados, 'rodada', 0, 1 << 30), ler_letras(dados), ler_opcao(dados, 'dica_usada'));
 
       case 'encerrar':
 

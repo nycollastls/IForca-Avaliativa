@@ -4,6 +4,8 @@ import 'validacao.dart';
 // Regras da sala
 const int minimo_jogadores = 2;
 const int maximo_jogadores = 6;
+const int maximo_espectadores = 10;
+const int maximo_erros = 6;
 const int pontos_maximos_rodada = 40;
 const int desconto_maximo_rodada = 10;
 
@@ -23,6 +25,7 @@ class Jogador {
 
   String nome;
   bool mostrar_nome;
+  bool espectador;
   DateTime visto_em;
   int pontos = 0;
   bool jogou = false;
@@ -31,6 +34,9 @@ class Jogador {
   bool terminou = false;
   bool venceu = false;
   int pontos_rodada = 0;
+  bool dica_usada = false;
+
+  final Set<String> letras = {};
 
 
   Jogador({
@@ -40,6 +46,7 @@ class Jogador {
     required this.nome,
     required this.mostrar_nome,
     required this.visto_em,
+    this.espectador = false,
 
   });
 
@@ -55,6 +62,36 @@ class Jogador {
     terminou = false;
     venceu = false;
     pontos_rodada = 0;
+    dica_usada = false;
+
+    letras.clear();
+
+  }
+
+
+  // Palavra do jeito que este jogador está vendo, com traços no que falta
+  List<String> montar_mascara(String palavra) {
+
+    return [
+
+      for (String letra in palavra.toUpperCase().split(''))
+
+        letra == ' ' || letra == '-' || letras.contains(normalizar_letra(letra)) ? letra : '_',
+
+    ];
+
+  }
+
+
+  // Letras tentadas que não estão na palavra
+  List<String> listar_erradas(String palavra) {
+
+    Set<String> letras_palavra = {for (String letra in palavra.split('')) normalizar_letra(letra)};
+    List<String> erradas = letras.where((letra) => !letras_palavra.contains(letra)).toList();
+
+    erradas.sort();
+
+    return erradas.take(maximo_erros).toList();
 
   }
 
@@ -111,26 +148,53 @@ class Sala {
   }
 
 
-  // Jogadores que ainda estão conectados
-  List<Jogador> listar_presentes(DateTime agora) {
+  // Quem joga, sem contar quem só assiste
+  List<Jogador> listar_participantes() {
 
-    return jogadores.where((jogador) => !jogador.esta_ausente(agora)).toList();
+    return jogadores.where((jogador) => !jogador.espectador).toList();
 
   }
 
 
-  // Quem comanda a sala: o primeiro que está conectado
+  // Jogadores que ainda estão conectados, sem contar quem só assiste
+  List<Jogador> listar_presentes(DateTime agora) {
+
+    return listar_participantes().where((jogador) => !jogador.esta_ausente(agora)).toList();
+
+  }
+
+
+  // Quem comanda a sala: o primeiro jogador que está conectado
   Jogador escolher_anfitriao(DateTime agora) {
 
     List<Jogador> presentes = listar_presentes(agora);
+    List<Jogador> participantes = listar_participantes();
 
-    return presentes.isEmpty ? jogadores.first : presentes.first;
+    if (presentes.isNotEmpty) {
+
+      return presentes.first;
+
+    }
+
+    return participantes.isEmpty ? jogadores.first : participantes.first;
+
+  }
+
+
+  // Recusa qualquer jogada de quem entrou só para assistir
+  void exigir_jogador(Jogador jogador) {
+
+    if (jogador.espectador) {
+
+      throw const ErroRegra(403, 'Quem está só assistindo não pode jogar.');
+
+    }
 
   }
 
 
   // Coloca o jogador na sala; quem volta recupera os pontos
-  void entrar(String id, String nome, bool mostrar_nome, DateTime agora) {
+  void entrar(String id, String nome, bool mostrar_nome, DateTime agora, {bool espectador = false}) {
 
     for (Jogador jogador in jogadores) {
 
@@ -146,9 +210,17 @@ class Sala {
 
     }
 
-    if (jogadores.length >= maximo_jogadores) {
+    int total_espectadores = jogadores.where((jogador) => jogador.espectador).length;
+
+    if (!espectador && listar_participantes().length >= maximo_jogadores) {
 
       throw const ErroRegra(409, 'Esta sala já tem $maximo_jogadores jogadores.');
+
+    }
+
+    if (espectador && total_espectadores >= maximo_espectadores) {
+
+      throw const ErroRegra(409, 'Esta sala já tem $maximo_espectadores pessoas assistindo.');
 
     }
 
@@ -163,6 +235,7 @@ class Sala {
         nome: nome,
         mostrar_nome: mostrar_nome,
         visto_em: agora,
+        espectador: espectador,
 
       );
 
@@ -174,6 +247,7 @@ class Sala {
       jogador_antigo.nome = nome;
       jogador_antigo.mostrar_nome = mostrar_nome;
       jogador_antigo.visto_em = agora;
+      jogador_antigo.espectador = espectador;
 
     }
 
@@ -209,7 +283,7 @@ class Sala {
 
     jogadores.removeWhere((jogador) => agora.difference(jogador.visto_em) > tempo_remocao);
 
-    if (fase != Fase.espera && jogadores.length < minimo_jogadores) {
+    if (fase != Fase.espera && listar_participantes().length < minimo_jogadores) {
 
       voltar_para_espera();
       return;
@@ -303,6 +377,8 @@ class Sala {
   // Começa o desafio
   void iniciar(String id, DateTime agora) {
 
+    exigir_jogador(buscar_jogador(id));
+
     if (fase != Fase.espera) {
 
       return;
@@ -338,7 +414,11 @@ class Sala {
   // Recebe a palavra secreta e começa a rodada
   void definir_palavra(String id, String palavra_nova, String dica_nova, DateTime agora) {
 
-    bool sou_desafiante = buscar_jogador(id).numero == numero_desafiante;
+    Jogador jogador = buscar_jogador(id);
+
+    exigir_jogador(jogador);
+
+    bool sou_desafiante = jogador.numero == numero_desafiante;
     bool pedido_repetido = fase == Fase.jogando && palavra == palavra_nova && dica == dica_nova;
 
     if (sou_desafiante && pedido_repetido) {
@@ -372,6 +452,9 @@ class Sala {
   void registrar_resultado(String id, int rodada_jogada, bool venceu, int pontos, DateTime agora) {
 
     Jogador jogador = buscar_jogador(id);
+
+    exigir_jogador(jogador);
+
     bool pode_registrar = fase == Fase.jogando && rodada == rodada_jogada;
 
     if (!pode_registrar || !jogador.participa || jogador.terminou) {
@@ -391,6 +474,27 @@ class Sala {
     jogador.pontos_rodada = jogador.pontos - pontos_anteriores;
 
     verificar_fim(agora);
+
+  }
+
+
+  // Guarda as letras que o jogador já tentou, para quem está assistindo
+  void registrar_progresso(String id, int rodada_jogada, Set<String> letras_novas, bool dica_usada) {
+
+    Jogador jogador = buscar_jogador(id);
+
+    exigir_jogador(jogador);
+
+    bool rodada_certa = (fase == Fase.jogando || fase == Fase.resultado) && rodada == rodada_jogada;
+
+    if (!rodada_certa || !jogador.participa) {
+
+      return;
+
+    }
+
+    jogador.letras.addAll(letras_novas);
+    jogador.dica_usada = jogador.dica_usada || dica_usada;
 
   }
 
@@ -446,6 +550,8 @@ class Sala {
 
     Jogador jogador = buscar_jogador(id);
 
+    exigir_jogador(jogador);
+
     if (fase != Fase.jogando || rodada != rodada_atual) {
 
       return;
@@ -466,7 +572,7 @@ class Sala {
   // Passa para a próxima rodada
   void proxima_rodada(String id, int rodada_atual, DateTime agora) {
 
-    buscar_jogador(id);
+    exigir_jogador(buscar_jogador(id));
 
     if (fase != Fase.resultado || rodada != rodada_atual) {
 
@@ -485,6 +591,7 @@ class Sala {
 
     Jogador eu = buscar_jogador(id);
     bool mostrar_palavra = fase == Fase.resultado || (fase == Fase.jogando && (eu.participa || eu.numero == numero_desafiante));
+    bool posso_assistir = fase == Fase.jogando && (!eu.participa || eu.terminou);
 
     return {
 
@@ -512,10 +619,26 @@ class Sala {
             'terminou': jogador.terminou,
             'venceu': jogador.venceu,
             'pontos_rodada': jogador.pontos_rodada,
+            'espectador': jogador.espectador,
+            'progresso': posso_assistir && jogador.participa ? montar_progresso(jogador) : null,
 
           },
 
       ],
+
+    };
+
+  }
+
+
+  // Andamento de quem está adivinhando, sem revelar o que ainda falta
+  Map<String, dynamic> montar_progresso(Jogador jogador) {
+
+    return {
+
+      'mascara': jogador.montar_mascara(palavra),
+      'erradas': jogador.listar_erradas(palavra),
+      'dica_usada': jogador.dica_usada,
 
     };
 

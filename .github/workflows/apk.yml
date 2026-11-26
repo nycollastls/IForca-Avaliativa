@@ -33,6 +33,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+          cache: gradle
 
       # Instala a mesma versão do Flutter usada no projeto
       - uses: subosito/flutter-action@v2
@@ -43,9 +44,14 @@ jobs:
 
       # Compila o APK apontando para o servidor do Render
       - run: flutter pub get
+      # Tenta até 3 vezes, porque o repositório de pacotes às vezes recusa por excesso de pedidos
       - run: |
           set -o pipefail
-          flutter build apk --release --dart-define=ENDERECO_SERVIDOR=https://iforca-servidor.onrender.com 2>&1 | tee compilacao.log
+          for tentativa in 1 2 3; do
+            flutter build apk --release --dart-define=ENDERECO_SERVIDOR=https://iforca-servidor.onrender.com 2>&1 | tee compilacao.log && exit 0
+            sleep 90
+          done
+          exit 1
 
       # Se falhar, mostra o fim do log como anotação para facilitar a leitura
       - if: failure()

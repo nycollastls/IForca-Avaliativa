@@ -1,0 +1,53 @@
+name: APK Android
+
+
+# Roda quando o app muda ou quando alguém pede pela aba Actions
+on:
+
+  push:
+    branches: [main]
+    paths:
+      - assets/**
+      - lib/**
+      - android/**
+      - pubspec.lock
+      - pubspec.yaml
+      - .github/workflows/apk.yml
+
+  workflow_dispatch:
+
+
+jobs:
+
+  compilar_apk:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # Baixa o código do repositório
+      - uses: actions/checkout@v4
+
+      # Instala o Java que o Gradle precisa
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # Instala a mesma versão do Flutter usada no projeto
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.50.1
+          cache: true
+
+      # Compila o APK apontando para o servidor do Render
+      - run: flutter pub get
+      - run: flutter build apk --release --dart-define=ENDERECO_SERVIDOR=https://iforca-servidor.onrender.com
+
+      # Deixa o APK disponível para baixar na execução
+      - uses: actions/upload-artifact@v4
+        with:
+          name: forca-da-programacao-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 30

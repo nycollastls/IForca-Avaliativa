@@ -26,13 +26,13 @@ jobs:
     steps:
 
       # Baixa o código do repositório
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # Instala o Java que o Gradle precisa
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: "21"
 
       # Instala a mesma versão do Flutter usada no projeto
       - uses: subosito/flutter-action@v2
@@ -43,7 +43,15 @@ jobs:
 
       # Compila o APK apontando para o servidor do Render
       - run: flutter pub get
-      - run: flutter build apk --release --dart-define=ENDERECO_SERVIDOR=https://iforca-servidor.onrender.com
+      - run: |
+          set -o pipefail
+          flutter build apk --release --dart-define=ENDERECO_SERVIDOR=https://iforca-servidor.onrender.com 2>&1 | tee compilacao.log
+
+      # Se falhar, mostra o fim do log como anotação para facilitar a leitura
+      - if: failure()
+        run: |
+          trecho=$(tail -n 60 compilacao.log | sed 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+          echo "::error title=Falha ao compilar o APK::$trecho"
 
       # Deixa o APK disponível para baixar na execução
       - uses: actions/upload-artifact@v4

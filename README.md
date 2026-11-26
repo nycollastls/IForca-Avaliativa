@@ -64,4 +64,4 @@ teclado
 - Nycollas Teles
 - Luiz Pinheiro
 - Elias Bento 
-Jonathan Jaciel
+- Jonathan Jaciel

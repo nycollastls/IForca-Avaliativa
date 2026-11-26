@@ -20,6 +20,7 @@ class PainelJogo extends StatefulWidget {
   final Future<void> Function(Resultado resultado) ao_terminar;
   final Palavra? Function(Palavra anterior)? sortear_proxima;
   final VoidCallback? ao_voltar;
+  final void Function(JogoForca jogo)? ao_jogar;
 
 
   const PainelJogo({
@@ -29,6 +30,7 @@ class PainelJogo extends StatefulWidget {
     required this.ao_terminar,
     this.sortear_proxima,
     this.ao_voltar,
+    this.ao_jogar,
 
   });
 
@@ -96,6 +98,7 @@ class _PainelJogoState extends State<PainelJogo> {
 
     });
 
+    widget.ao_jogar?.call(jogo);
     foco_teclado.requestFocus();
 
     if (jogo.encerrado) {
@@ -140,6 +143,7 @@ class _PainelJogoState extends State<PainelJogo> {
 
     setState(jogo.usar_dica);
 
+    widget.ao_jogar?.call(jogo);
     foco_teclado.requestFocus();
 
   }

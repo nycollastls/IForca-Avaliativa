@@ -2,6 +2,36 @@
 enum FaseSala { espera, escrevendo, jogando, resultado }
 
 
+// Andamento de quem está adivinhando, para quem está assistindo
+class ProgressoJogador {
+
+  final List<String> mascara;
+  final List<String> erradas;
+  final bool dica_usada;
+
+
+  const ProgressoJogador({required this.mascara, required this.erradas, required this.dica_usada});
+
+
+  // Lê o andamento que veio do servidor
+  factory ProgressoJogador.de_json(Map<String, dynamic> dados) {
+
+    return ProgressoJogador(
+
+      mascara: [for (dynamic letra in dados['mascara'] as List<dynamic>) letra as String],
+      erradas: [for (dynamic letra in dados['erradas'] as List<dynamic>) letra as String],
+      dica_usada: dados['dica_usada'] as bool,
+
+    );
+
+  }
+
+
+  int get quantidade_erros => erradas.length;
+
+}
+
+
 // Jogador da sala do jeito que o servidor manda
 class JogadorSala {
 
@@ -13,6 +43,8 @@ class JogadorSala {
   final bool participa;
   final bool terminou;
   final bool venceu;
+  final bool espectador;
+  final ProgressoJogador? progresso;
 
 
   const JogadorSala({
@@ -25,12 +57,16 @@ class JogadorSala {
     required this.participa,
     required this.terminou,
     required this.venceu,
+    this.espectador = false,
+    this.progresso,
 
   });
 
 
   // Lê o jogador que veio do servidor
   factory JogadorSala.de_json(Map<String, dynamic> dados) {
+
+    Object? progresso = dados['progresso'];
 
     return JogadorSala(
 
@@ -42,6 +78,8 @@ class JogadorSala {
       participa: dados['participa'] as bool,
       terminou: dados['terminou'] as bool,
       venceu: dados['venceu'] as bool,
+      espectador: dados['espectador'] == true,
+      progresso: progresso is Map<String, dynamic> ? ProgressoJogador.de_json(progresso) : null,
 
     );
 
@@ -117,7 +155,11 @@ class SalaDesafio {
 
   JogadorSala get eu => jogadores.firstWhere((jogador) => jogador.numero == meu_numero);
 
-  int get total_presentes => jogadores.where((jogador) => !jogador.ausente).length;
+  bool get sou_espectador => eu.espectador;
+
+  int get total_presentes => jogadores.where((jogador) => !jogador.ausente && !jogador.espectador).length;
+
+  List<JogadorSala> get adivinhando => jogadores.where((jogador) => jogador.participa && jogador.numero != meu_numero).toList();
 
 
   String get nome_desafiante {

@@ -22,6 +22,12 @@ class ListaJogadores extends StatelessWidget {
 
     }
 
+    if (jogador.espectador) {
+
+      return 'Só assistindo';
+
+    }
+
     if (sala.fase == FaseSala.espera) {
 
       return jogador.numero == sala.numero_anfitriao ? 'Começa o desafio' : 'Na sala';
@@ -135,7 +141,13 @@ class ListaJogadores extends StatelessWidget {
 
           ),
 
-          Text('${jogador.pontos}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+          if (jogador.espectador)
+
+            const Icon(Icons.visibility_outlined, semanticLabel: 'Assistindo')
+
+          else
+
+            Text('${jogador.pontos}', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
 
         ],
 

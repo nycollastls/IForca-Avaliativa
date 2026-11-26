@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../models/categoria.dart';
+import '../models/jogo_forca.dart';
 import '../models/nivel.dart';
 import '../models/palavra.dart';
 import '../models/perfil.dart';
@@ -13,6 +14,7 @@ import '../services/servico_online.dart';
 import '../services/validador.dart';
 import '../widgets/estilo_caderno.dart';
 import '../widgets/lista_jogadores.dart';
+import '../widgets/painel_espectador.dart';
 import '../widgets/painel_jogo.dart';
 import '../widgets/tema_caderno.dart';
 
@@ -47,6 +49,8 @@ class _TelaSalaState extends State<TelaSala> {
   late final Timer relogio_consulta;
 
   Resultado? resultado_pendente;
+  List<String> letras_tentadas = [];
+  bool dica_usada = false;
   int rodada_do_resultado = 0;
   int rodada_do_painel = 0;
   int total_pedidos = 0;
@@ -97,9 +101,11 @@ class _TelaSalaState extends State<TelaSala> {
 
     bool vai_jogar = sala.fase == FaseSala.jogando && sala.eu.participa && !sala.eu.terminou;
 
-    if (vai_jogar) {
+    if (vai_jogar && rodada_do_painel != sala.rodada) {
 
       rodada_do_painel = sala.rodada;
+      letras_tentadas = [];
+      dica_usada = false;
 
     }
 
@@ -132,7 +138,7 @@ class _TelaSalaState extends State<TelaSala> {
 
     }
 
-    return online.enviar_resultado(perfil, sala.codigo, rodada_do_resultado, resultado);
+    return online.enviar_resultado(perfil, sala.codigo, rodada_do_resultado, resultado, letras: letras_tentadas, dica_usada: dica_usada);
 
   }
 
@@ -292,6 +298,23 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
+  // Manda as letras ao servidor para quem está assistindo; se falhar, a próxima jogada manda de novo
+  void enviar_progresso(JogoForca jogo) {
+
+    letras_tentadas = jogo.letras_tentadas.toList()..sort();
+    dica_usada = jogo.dica_usada;
+
+    if (rodada_do_painel != sala.rodada) {
+
+      return;
+
+    }
+
+    online.enviar_progresso(perfil, sala.codigo, sala.rodada, letras_tentadas, dica_usada).ignore();
+
+  }
+
+
   // Guarda o resultado da partida para enviar ao servidor
   Future<void> terminar_partida(Resultado resultado) async {
 
@@ -433,6 +456,15 @@ class _TelaSalaState extends State<TelaSala> {
 
     return [
 
+      if (sala.sou_espectador)
+
+        const Padding(
+
+          padding: EdgeInsets.only(bottom: 12),
+          child: Text('Você entrou só para assistir.', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+
+        ),
+
       const Text('Passe este código para quem vai jogar:'),
 
       const SizedBox(height: 8),
@@ -560,7 +592,7 @@ class _TelaSalaState extends State<TelaSala> {
   }
 
 
-  // Painel do jogo para quem adivinha, ou o acompanhamento para quem escreveu
+  // Painel do jogo para quem adivinha, ou o acompanhamento para quem olha
   List<Widget> construir_partida() {
 
     if (rodada_do_painel == sala.rodada) {
@@ -581,6 +613,7 @@ class _TelaSalaState extends State<TelaSala> {
           ),
 
           ao_terminar: terminar_partida,
+          ao_jogar: enviar_progresso,
 
         ),
 
@@ -593,6 +626,8 @@ class _TelaSalaState extends State<TelaSala> {
 
           ),
 
+        if (sala.eu.terminou) ...construir_acompanhamento(),
+
       ];
 
     }
@@ -603,7 +638,7 @@ class _TelaSalaState extends State<TelaSala> {
 
         Text('Estão tentando adivinhar "${sala.palavra}".', style: const TextStyle(fontSize: 18)),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
 
         OutlinedButton(
 
@@ -612,18 +647,57 @@ class _TelaSalaState extends State<TelaSala> {
 
         ),
 
+        const SizedBox(height: 8),
+
+        ...construir_acompanhamento(),
+
       ];
 
     }
 
     return [
 
-      Text(
+      Text(descrever_espera(), style: const TextStyle(fontSize: 18)),
 
-        sala.eu.terminou ? 'Esperando os outros terminarem.' : 'Esta rodada já começou. Você joga na próxima.',
-        style: const TextStyle(fontSize: 18),
+      const SizedBox(height: 8),
 
-      ),
+      ...construir_acompanhamento(),
+
+    ];
+
+  }
+
+
+  // Frase para quem não está adivinhando nesta rodada
+  String descrever_espera() {
+
+    if (sala.sou_espectador) {
+
+      return 'Rodada ${sala.rodada}. Você está assistindo.';
+
+    }
+
+    return sala.eu.terminou ? 'Esperando os outros terminarem.' : 'Esta rodada já começou. Você joga na próxima.';
+
+  }
+
+
+  // Cartões de quem está adivinhando, só para acompanhar
+  List<Widget> construir_acompanhamento() {
+
+    List<JogadorSala> jogando = sala.adivinhando;
+
+    if (jogando.isEmpty) {
+
+      return [];
+
+    }
+
+    return [
+
+      const Subtitulo('Acompanhe quem está adivinhando'),
+
+      for (JogadorSala jogador in jogando) PainelEspectador(key: ValueKey(jogador.numero), jogador: jogador),
 
     ];
 
@@ -675,7 +749,13 @@ class _TelaSalaState extends State<TelaSala> {
 
       const SizedBox(height: 16),
 
-      FilledButton(
+      if (sala.sou_espectador)
+
+        const Text('Esperando um jogador passar para a próxima rodada.')
+
+      else
+
+        FilledButton(
 
         onPressed: executando ? null : () => executar(() => online.proxima_rodada(perfil, sala.codigo, sala.rodada)),
         child: const Text('Próxima rodada'),

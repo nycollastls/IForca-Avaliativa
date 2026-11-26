@@ -131,10 +131,10 @@ class ServicoOnline {
   }
 
 
-  // Entra em uma sala pelo código
-  Future<SalaDesafio> entrar_sala(Perfil perfil, String codigo) {
+  // Entra em uma sala pelo código, para jogar ou só para assistir
+  Future<SalaDesafio> entrar_sala(Perfil perfil, String codigo, {bool espectador = false}) {
 
-    return pedir_sala('salas/$codigo/entrar', identificar(perfil), limite_inicial);
+    return pedir_sala('salas/$codigo/entrar', {...identificar(perfil), 'espectador': espectador}, limite_inicial);
 
   }
 
@@ -163,13 +163,38 @@ class ServicoOnline {
   }
 
 
-  // Envia o resultado da partida
-  Future<SalaDesafio> enviar_resultado(Perfil perfil, String codigo, int rodada, Resultado resultado) {
+  // Envia as letras já tentadas, para quem está assistindo acompanhar
+  Future<SalaDesafio> enviar_progresso(Perfil perfil, String codigo, int rodada, List<String> letras, bool dica_usada) {
+
+    return pedir_sala(
+
+      'salas/$codigo/progresso',
+      {'id': perfil.id, 'rodada': rodada, 'letras': letras, 'dica_usada': dica_usada},
+      limite_rapido,
+
+    );
+
+  }
+
+
+  // Envia o resultado da partida, com as letras tentadas
+  Future<SalaDesafio> enviar_resultado(Perfil perfil, String codigo, int rodada, Resultado resultado, {List<String>? letras, bool dica_usada = false}) {
 
     return pedir_sala(
 
       'salas/$codigo/resultado',
-      {'id': perfil.id, 'rodada': rodada, 'venceu': resultado.venceu, 'pontos': resultado.pontos},
+
+      {
+
+        'id': perfil.id,
+        'rodada': rodada,
+        'venceu': resultado.venceu,
+        'pontos': resultado.pontos,
+        'letras': ?letras,
+        'dica_usada': dica_usada,
+
+      },
+
       limite_rapido,
 
     );

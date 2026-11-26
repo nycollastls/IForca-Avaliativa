@@ -107,8 +107,8 @@ class _TelaDesafioState extends State<TelaDesafio> {
   }
 
 
-  // Confere o código digitado e entra na sala
-  void entrar_sala() {
+  // Confere o código digitado e entra na sala, para jogar ou só para assistir
+  void entrar_sala({bool espectador = false}) {
 
     if (!chave_formulario.currentState!.validate()) {
 
@@ -118,7 +118,7 @@ class _TelaDesafioState extends State<TelaDesafio> {
 
     String codigo = controle_codigo.text.trim().toUpperCase();
 
-    abrir_sala(() => widget.dados.online.entrar_sala(widget.dados.perfis.perfil, codigo));
+    abrir_sala(() => widget.dados.online.entrar_sala(widget.dados.perfis.perfil, codigo, espectador: espectador));
 
   }
 
@@ -209,6 +209,16 @@ class _TelaDesafioState extends State<TelaDesafio> {
 
               onPressed: entrar_sala,
               child: const Text('Entrar na sala'),
+
+            ),
+
+            const SizedBox(height: 8),
+
+            TextButton.icon(
+
+              onPressed: () => entrar_sala(espectador: true),
+              icon: const Icon(Icons.visibility_outlined),
+              label: const Text('Entrar só para assistir'),
 
             ),
 
